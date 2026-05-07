@@ -1,5 +1,5 @@
 <script setup>
-import AppButton from '@/components/ui/AppButton.vue'
+import AppButton from '@/shared/components/ui/AppButton.vue'
 </script>
 
 <template>
@@ -12,22 +12,22 @@ import AppButton from '@/components/ui/AppButton.vue'
           </h1>
 
           <p class="mb-8 text-lg leading-relaxed text-gray-600 sm:text-xl">
-            Somos una institución financiera comprometida con los estudiantes, brindando soluciones ágiles y eficientes
+            Somos una institucion financiera comprometida con los estudiantes, brindando soluciones agiles y eficientes
           </p>
 
-          <AppButton size="lg" variant="secondary" href="/registro">
+          <AppButton size="lg" variant="secondary" to="/registro">
             Abre tu cuenta hoy
           </AppButton>
         </div>
 
         <div class="mt-12 lg:mt-0">
-          <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-2xl">
+          <div class="relative aspect-4/3 overflow-hidden rounded-2xl bg-gray-100 shadow-2xl">
             <img
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200"
               alt="Estudiantes universitarios colaborando"
               class="h-full w-full object-cover"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-[#085163]/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-t from-[#085163]/20 to-transparent"></div>
           </div>
         </div>
       </div>
