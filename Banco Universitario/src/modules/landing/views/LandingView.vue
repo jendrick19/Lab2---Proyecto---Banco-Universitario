@@ -6,6 +6,7 @@ import BenefitsSection from '@/modules/landing/components/BenefitsSection.vue'
 import StatsSection from '@/modules/landing/components/Stats.vue'
 import Testimonials from '@/modules/landing/components/Testimonials.vue'
 import FAQ from '@/modules/landing/components/FAQ.vue'
+import CTASection from '@/modules/landing/components/CTASection.vue'
 </script>
 
 <template>
@@ -16,4 +17,5 @@ import FAQ from '@/modules/landing/components/FAQ.vue'
   <StatsSection />
   <Testimonials />
   <FAQ />
+  <CTASection />
 </template>
