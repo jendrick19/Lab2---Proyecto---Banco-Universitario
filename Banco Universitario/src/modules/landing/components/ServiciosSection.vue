@@ -1,66 +1,79 @@
+<script setup>
+import { ArrowRightLeft, Banknote, GraduationCap, Wallet, Award } from 'lucide-vue-next';
+
+const services = [
+  {
+    icon: ArrowRightLeft,
+    title: 'Transferencias sin comisión',
+    description: 'El Banco Universitario ofrece un servicio de transferencias entre estudiantes sin costo alguno, con el objetivo de facilitar el intercambio de dinero de manera rápida, segura y eficiente.',
+  },
+  {
+    icon: Banknote,
+    title: 'Depósitos en efectivo',
+    description: 'Permite a los estudiantes realizar depósitos en efectivo de manera sencilla y cómoda en cualquiera de sus sucursales. Disponible las 24 horas del día, los 7 días de la semana.',
+  },
+  {
+    icon: Wallet,
+    title: 'Retiros en efectivo',
+    description: 'Los estudiantes pueden realizar retiros en efectivo de manera rápida y segura en cualquiera de las sucursales del banco, con la tranquilidad de que sus fondos están protegidos.',
+  },
+  {
+    icon: GraduationCap,
+    title: 'Pago de matrícula',
+    description: 'Servicio de pago de matrícula estudiantil en línea, disponible las 24 horas del día, que permite a los estudiantes universitarios pagar sus matrículas de manera rápida y sencilla.',
+  },
+  {
+    icon: Award,
+    title: 'Cobro de becas',
+    description: 'Los estudiantes universitarios pueden cobrar sus becas estudiantiles de manera sencilla y eficiente en cualquiera de las sucursales del banco, accediendo a sus fondos de forma rápida y segura.',
+  },
+];
+</script>
+
 <template>
-  <section class="py-24 bg-white" id="servicios">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      
-      <div class="mb-20 text-center">
-        <h2 class="text-5xl font-normal text-[#004a4e] tracking-tight">
+  <section id="servicios" class="py-16 lg:py-24 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl mb-4" style="color: #085f63">
           Servicios pensados para ti
         </h2>
       </div>
 
-      <div class="flex flex-wrap justify-center gap-10">
-        
-        <div class="flex flex-col items-center text-center p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.33%-2.5rem)]">
-          <div class="w-16 h-16 bg-[#55c0b8] rounded-full flex items-center justify-center mb-6">
-            <ArrowLeftRightIcon class="w-8 h-8 text-white" />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          v-for="(service, index) in services.slice(0, 3)"
+          :key="index"
+          class="bg-white border border-gray-200 rounded-xl p-8 shadow-md hover:shadow-xl transition-all"
+        >
+          <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #49beb7">
+            <component :is="service.icon" class="w-8 h-8 text-white" />
           </div>
-          <h3 class="text-2xl font-semibold text-[#004a4e] mb-4">Transferencias sin comisión</h3>
-          <p class="text-gray-600 leading-relaxed text-sm text-left">El Banco Universitario ofrece un servicio de transferencias entre estudiantes sin costo alguno, con el objetivo de facilitar el intercambio de dinero de manera rápida, segura y eficiente.</p>
+          <h3 class="text-xl sm:text-2xl mb-3" style="color: #085f63">
+            {{ service.title }}
+          </h3>
+          <p class="text-gray-600 leading-relaxed">
+            {{ service.description }}
+          </p>
         </div>
+      </div>
 
-        <div class="flex flex-col items-center text-center p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.33%-2.5rem)]">
-          <div class="w-16 h-16 bg-[#55c0b8] rounded-full flex items-center justify-center mb-6">
-            <BanknoteIcon class="w-8 h-8 text-white" />
+      <div class="flex flex-col md:flex-row justify-center gap-8 mt-8">
+        <div
+          v-for="(service, index) in services.slice(3)"
+          :key="index + 3"
+          class="bg-white border border-gray-200 rounded-xl p-8 shadow-md hover:shadow-xl transition-all w-full md:w-[calc(33.333%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
+        >
+          <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #49beb7">
+            <component :is="service.icon" class="w-8 h-8 text-white" />
           </div>
-          <h3 class="text-2xl font-semibold text-[#004a4e] mb-4">Depósitos</h3>
-          <p class="text-gray-600 leading-relaxed text-sm text-left">Permite a los estudiantes realizar depósitos en efectivo de manera sencilla y cómoda en cualquiera de sus sucursales. Disponible las 24 horas del día, los 7 días de la semana.</p>
+          <h3 class="text-xl sm:text-2xl mb-3" style="color: #085f63">
+            {{ service.title }}
+          </h3>
+          <p class="text-gray-600 leading-relaxed">
+            {{ service.description }}
+          </p>
         </div>
-
-        <div class="flex flex-col items-center text-center p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.33%-2.5rem)]">
-          <div class="w-16 h-16 bg-[#55c0b8] rounded-full flex items-center justify-center mb-6">
-            <WalletCardsIcon class="w-8 h-8 text-white" />
-          </div>
-          <h3 class="text-2xl font-semibold text-[#004a4e] mb-4">Retiros</h3>
-          <p class="text-gray-600 leading-relaxed text-sm text-left">Los estudiantes pueden realizar retiros en efectivo de manera rápida y segura en cualquiera de las sucursales del banco, con la tranquilidad de que sus fondos están protegidos.</p>
-        </div>
-
-        <div class="flex flex-col items-center text-center p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.33%-2.5rem)]">
-          <div class="w-16 h-16 bg-[#55c0b8] rounded-full flex items-center justify-center mb-6">
-            <GraduationCapIcon class="w-8 h-8 text-white" />
-          </div>
-          <h3 class="text-2xl font-semibold text-[#004a4e] mb-4">Matrícula</h3>
-          <p class="text-gray-600 leading-relaxed text-sm text-left">Servicio de pago de matrícula estudiantil en línea, disponible las 24 horas del día, que permite a los estudiantes universitarios pagar sus matrículas de manera rápida y sencilla.</p>
-        </div>
-
-        <div class="flex flex-col items-center text-center p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.33%-2.5rem)]">
-          <div class="w-16 h-16 bg-[#55c0b8] rounded-full flex items-center justify-center mb-6">
-            <AwardIcon class="w-8 h-8 text-white" />
-          </div>
-          <h3 class="text-2xl font-semibold text-[#004a4e] mb-4">Becas</h3>
-          <p class="text-gray-600 leading-relaxed text-sm text-left">Los estudiantes pueden cobrar sus becas estudiantiles de manera sencilla y eficiente en cuaquiera de las sucursales del banco, accediendo de forma rápida y segura.</p>
-        </div>
-        </div>
-
-      </div>  
-    </section>
+      </div>
+    </div>
+  </section>
 </template>
-
-<script setup>
-import { 
-  ArrowLeftRightIcon, 
-  BanknoteIcon, 
-  WalletCardsIcon, 
-  GraduationCapIcon, 
-  AwardIcon 
-} from 'lucide-vue-next';
-</script>
