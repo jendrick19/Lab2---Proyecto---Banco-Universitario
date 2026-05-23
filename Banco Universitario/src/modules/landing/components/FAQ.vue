@@ -60,7 +60,7 @@ const toggleFaq = (index) => {
           >
             <span class="text-lg text-[#085163] pr-8">{{ faq.question }}</span>
             <ChevronDown
-              class="h-5 w-5 text-[#49beb7] flex-shrink-0 transition-transform"
+              class="h-5 w-5 shrink-0 text-[#49beb7] transition-transform"
               :class="{ 'rotate-180': openIndex === index }"
             />
           </button>
@@ -80,9 +80,9 @@ const toggleFaq = (index) => {
         <p class="text-gray-600 mb-4">
           ¿No encontraste lo que buscabas?
         </p>
-        <button class="px-6 py-3 bg-[#49beb7] text-white rounded-lg hover:bg-[#085163] transition-colors">
+        <RouterLink to="/contacto" class="inline-block rounded-lg bg-[#49beb7] px-6 py-3 text-white transition-colors hover:bg-[#085163]">
           Contactar soporte
-        </button>
+        </RouterLink>
       </div>
     </div>
   </section>
