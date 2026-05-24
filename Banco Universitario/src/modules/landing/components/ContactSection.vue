@@ -96,7 +96,7 @@ const onContactSubmit = () => {}
           <p class="text-gray-600 mb-8">
             Mantente al día con nuestras novedades y promociones exclusivas
           </p>
-          <div class="flex justify-center items-center gap-6">
+          <div class="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
             <a
               href="https://facebook.com/bancouniversitariove"
               target="_blank"
