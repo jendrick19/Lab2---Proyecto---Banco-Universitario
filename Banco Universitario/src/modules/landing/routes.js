@@ -1,5 +1,5 @@
 import LandingView from '@/modules/landing/views/LandingView.vue'
-import ContactoView from '@/modules/landing/views/ContactoView.vue'
+import ContactView from '@/modules/landing/views/ContactView.vue'
 
 export const landingRoutes = [
   {
@@ -10,6 +10,6 @@ export const landingRoutes = [
   {
     path: 'contacto',
     name: 'contacto',
-    component: ContactoView,
+    component: ContactView,
   },
 ]
