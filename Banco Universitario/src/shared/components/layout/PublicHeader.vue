@@ -20,7 +20,7 @@ const mobileMenuOpen = ref(false)
           <a href="#inicio" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Inicio</a>
           <a href="#nosotros" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Nosotros</a>
           <a href="#servicios" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Servicios</a>
-          <a href="#contacto" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Contacto</a>
+          <RouterLink to="/contacto" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Contacto</RouterLink>
         </div>
 
         <div class="hidden md:flex md:items-center md:space-x-4">
@@ -50,7 +50,7 @@ const mobileMenuOpen = ref(false)
         <a href="#inicio" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Inicio</a>
         <a href="#nosotros" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Nosotros</a>
         <a href="#servicios" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Servicios</a>
-        <a href="#contacto" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Contacto</a>
+        <RouterLink to="/contacto" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Contacto</RouterLink>
         <div class="space-y-2 pt-4">
           <AppButton size="md" to="/login" variant="outline" class="w-full" @click="mobileMenuOpen = false">Ingresar</AppButton>
           <AppButton size="md" to="/registro" variant="primary" class="w-full" @click="mobileMenuOpen = false">Registrarse</AppButton>
