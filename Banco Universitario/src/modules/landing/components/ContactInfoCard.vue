@@ -12,10 +12,6 @@ defineProps({
     type: String,
     default: '',
   },
-  description: {
-    type: String,
-    default: '',
-  },
   icon: {
     type: Object,
     required: true,
@@ -24,30 +20,29 @@ defineProps({
     type: String,
     default: 'bg-[#49beb7]',
   },
-  cardClass: {
-    type: String,
-    default: '',
-  },
 })
 </script>
 
 <template>
-  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm" :class="cardClass">
+  <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
     <div class="flex items-start gap-4">
-      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-white" :class="iconBgClass">
-        <component :is="icon" class="h-6 w-6" />
+      <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" :class="iconBgClass">
+        <component :is="icon" class="w-6 h-6 text-white" />
       </div>
       <div>
-        <p class="mb-2 text-lg font-semibold text-[#085f63]">{{ title }}</p>
+        <h3 class="text-lg font-semibold mb-2" style="color: #085f63">
+          {{ title }}
+        </h3>
         <a
           v-if="href"
           :href="href"
-          class="text-gray-700 transition-colors hover:text-[#49beb7]"
+          class="text-gray-700 hover:text-secondary transition-colors break-all"
         >
           {{ value }}
         </a>
-        <p v-else class="text-gray-700">{{ value }}</p>
-        <p v-if="description" class="mt-1 text-sm text-gray-500">{{ description }}</p>
+        <p v-else class="text-gray-700 leading-relaxed">
+          {{ value }}
+        </p>
       </div>
     </div>
   </div>
