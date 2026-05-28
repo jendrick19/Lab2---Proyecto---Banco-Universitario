@@ -5,7 +5,7 @@ import { ArrowRight, Smartphone, Check } from 'lucide-vue-next';
 <template>
   <section class="py-20 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center bg-gradient-to-r from-[#085163] to-[#49beb7] rounded-3xl overflow-hidden shadow-2xl">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center bg-gradient-to-r from-primary to-secondary rounded-3xl overflow-hidden shadow-2xl">
         <!-- Contenido Izquierda -->
         <div class="p-8 lg:p-12 text-white">
           <h2 class="text-3xl sm:text-4xl lg:text-5xl mb-6">
@@ -39,7 +39,7 @@ import { ArrowRight, Smartphone, Check } from 'lucide-vue-next';
           <div class="flex flex-col sm:flex-row gap-4">
             <router-link
               to="/registro"
-              class="group inline-flex items-center justify-center px-8 py-4 bg-white text-[#085163] rounded-lg hover:bg-white/90 transition-all shadow-xl"
+              class="group inline-flex items-center justify-center px-8 py-4 bg-white text-primary rounded-lg hover:bg-white/90 transition-all shadow-xl"
             >
               <Smartphone class="mr-2 h-5 w-5" />
               Abrir cuenta ahora

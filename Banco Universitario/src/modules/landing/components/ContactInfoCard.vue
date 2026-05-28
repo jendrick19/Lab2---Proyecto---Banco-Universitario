@@ -18,7 +18,7 @@ defineProps({
   },
   iconBgClass: {
     type: String,
-    default: 'bg-[#49beb7]',
+    default: 'bg-secondary',
   },
 })
 </script>
@@ -30,7 +30,7 @@ defineProps({
         <component :is="icon" class="w-6 h-6 text-white" />
       </div>
       <div>
-        <h3 class="text-lg font-semibold mb-2" style="color: #085f63">
+        <h3 class="mb-2 text-lg font-semibold text-primary">
           {{ title }}
         </h3>
         <a

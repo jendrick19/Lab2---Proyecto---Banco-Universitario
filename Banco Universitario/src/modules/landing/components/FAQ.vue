@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from 'vue';
-import { ChevronDown } from 'lucide-vue-next';
+import { ref } from 'vue'
+import { ChevronDown } from 'lucide-vue-next'
 
-const openIndex = ref(0);
+const openIndex = ref(0)
 
 const faqs = [
   {
@@ -29,18 +29,18 @@ const faqs = [
     question: '¿Qué tan segura es la aplicación?',
     answer: 'Utilizamos encriptación de nivel bancario, autenticación biométrica y monitoreo 24/7. Cada transacción genera una notificación instantánea y puedes bloquear tu tarjeta desde la app en cualquier momento.',
   },
-];
+]
 
 const toggleFaq = (index) => {
-  openIndex.value = openIndex.value === index ? null : index;
-};
+  openIndex.value = openIndex.value === index ? null : index
+}
 </script>
 
 <template>
-  <section class="py-20 bg-gray-50">
+  <section class="bg-gray-50 py-20">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl text-[#085163] mb-4">
+      <div class="mb-16 text-center">
+        <h2 class="mb-4 text-3xl text-primary sm:text-4xl lg:text-5xl">
           Preguntas Frecuentes
         </h2>
         <p class="text-xl text-gray-600">
@@ -52,24 +52,35 @@ const toggleFaq = (index) => {
         <div
           v-for="(faq, index) in faqs"
           :key="index"
-          class="bg-white rounded-xl shadow-sm overflow-hidden transition-all"
+          class="overflow-hidden rounded-xl bg-white shadow-sm transition-all"
         >
-          <button
-            class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-            @click="toggleFaq(index)"
-          >
-            <span class="text-lg text-[#085163] pr-8">{{ faq.question }}</span>
-            <ChevronDown
-              class="h-5 w-5 shrink-0 text-[#49beb7] transition-transform"
-              :class="{ 'rotate-180': openIndex === index }"
-            />
-          </button>
-          
+          <h3>
+            <button
+              :id="`faq-button-${index}`"
+              type="button"
+              class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-gray-50"
+              :aria-expanded="openIndex === index"
+              :aria-controls="`faq-panel-${index}`"
+              @click="toggleFaq(index)"
+            >
+              <span class="pr-8 text-lg text-primary">{{ faq.question }}</span>
+              <ChevronDown
+                class="h-5 w-5 shrink-0 text-secondary transition-transform"
+                :class="{ 'rotate-180': openIndex === index }"
+                aria-hidden="true"
+              />
+            </button>
+          </h3>
+
           <div
+            :id="`faq-panel-${index}`"
+            role="region"
+            :aria-labelledby="`faq-button-${index}`"
+            :hidden="openIndex !== index"
             class="overflow-hidden transition-all duration-300"
             :class="openIndex === index ? 'max-h-96' : 'max-h-0'"
           >
-            <div class="px-6 pb-5 text-gray-600 leading-relaxed">
+            <div class="px-6 pb-5 leading-relaxed text-gray-600">
               {{ faq.answer }}
             </div>
           </div>
@@ -77,10 +88,10 @@ const toggleFaq = (index) => {
       </div>
 
       <div class="mt-12 text-center">
-        <p class="text-gray-600 mb-4">
+        <p class="mb-4 text-gray-600">
           ¿No encontraste lo que buscabas?
         </p>
-        <RouterLink to="/contacto" class="inline-block rounded-lg bg-[#49beb7] px-6 py-3 text-white transition-colors hover:bg-[#085163]">
+        <RouterLink to="/contacto" class="inline-block rounded-lg bg-secondary px-6 py-3 text-white transition-colors hover:bg-primary">
           Contactar soporte
         </RouterLink>
       </div>

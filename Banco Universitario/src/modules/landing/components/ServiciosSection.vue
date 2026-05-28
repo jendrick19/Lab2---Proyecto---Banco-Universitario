@@ -34,7 +34,7 @@ const services = [
   <section id="servicios" class="py-16 lg:py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl mb-4" style="color: #085f63">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl mb-4 text-primary">
           Servicios pensados para ti
         </h2>
       </div>
@@ -45,10 +45,10 @@ const services = [
           :key="index"
           class="bg-white border border-gray-200 rounded-xl p-8 shadow-md hover:shadow-xl transition-all"
         >
-          <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #49beb7">
+          <div class="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
             <component :is="service.icon" class="w-8 h-8 text-white" />
           </div>
-          <h3 class="text-xl sm:text-2xl mb-3" style="color: #085f63">
+          <h3 class="mb-3 text-xl text-primary sm:text-2xl">
             {{ service.title }}
           </h3>
           <p class="text-gray-600 leading-relaxed">
@@ -63,10 +63,10 @@ const services = [
           :key="index + 3"
           class="bg-white border border-gray-200 rounded-xl p-8 shadow-md hover:shadow-xl transition-all w-full md:w-[calc(33.333%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
         >
-          <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #49beb7">
+          <div class="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
             <component :is="service.icon" class="w-8 h-8 text-white" />
           </div>
-          <h3 class="text-xl sm:text-2xl mb-3" style="color: #085f63">
+          <h3 class="mb-3 text-xl text-primary sm:text-2xl">
             {{ service.title }}
           </h3>
           <p class="text-gray-600 leading-relaxed">

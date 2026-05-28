@@ -30,11 +30,11 @@ const beneficios = [
 
         <div class="lg:pl-8">
           
-          <div class="mb-6 inline-flex items-center rounded-full bg-[#49beb7]/10 px-4 py-2">
-            <span class="text-sm font-normal text-[#49beb7]">Beneficios exclusivos</span>
+          <div class="mb-6 inline-flex items-center rounded-full bg-secondary/10 px-4 py-2">
+            <span class="text-sm font-normal text-secondary">Beneficios exclusivos</span>
           </div>
 
-          <h2 class="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl text-[#085163] mb-2 leading-tight lg:whitespace-nowrap font-medium">
+          <h2 class="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl text-primary mb-2 leading-tight lg:whitespace-nowrap font-medium">
             Más que un Banco, Tu <br /> Aliado Universitario
           </h2>
           
@@ -46,7 +46,7 @@ const beneficios = [
           <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
             <div v-for="(beneficio, index) in beneficios" :key="index" class="flex items-center gap-3">
               <div class="shrink-0">
-                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-[#49beb7] text-white">
+                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                   </svg>
