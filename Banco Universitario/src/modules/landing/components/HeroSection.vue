@@ -7,12 +7,12 @@ import AppButton from '@/shared/components/ui/AppButton.vue'
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="items-center gap-16 lg:grid lg:grid-cols-2">
         <div>
-          <h1 class="mb-6 text-4xl leading-tight text-[#085f63] sm:text-5xl lg:text-6xl">
+          <h1 class="mb-6 text-4xl leading-tight text-primary sm:text-5xl lg:text-6xl">
             Tu banco, tu futuro universitario
           </h1>
 
           <p class="mb-8 text-lg leading-relaxed text-gray-600 sm:text-xl">
-            Somos una institucion financiera comprometida con los estudiantes, brindando soluciones agiles y eficientes
+            Somos una institución financiera comprometida con los estudiantes, brindando soluciones ágiles y eficientes
           </p>
 
           <AppButton size="lg" variant="secondary" to="/registro">
@@ -27,7 +27,7 @@ import AppButton from '@/shared/components/ui/AppButton.vue'
               alt="Estudiantes universitarios colaborando"
               class="h-full w-full object-cover"
             />
-            <div class="absolute inset-0 bg-linear-to-t from-[#085163]/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-t from-primary/20 to-transparent"></div>
           </div>
         </div>
       </div>

@@ -33,7 +33,7 @@ const testimonials = [
   <section class="py-20 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl text-[#085163] mb-4">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl text-primary mb-4">
           Lo Que Dicen Nuestros Estudiantes
         </h2>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -47,7 +47,7 @@ const testimonials = [
           :key="index"
           class="bg-gray-50 rounded-2xl p-8 relative hover:shadow-lg transition-shadow"
         >
-          <Quote class="absolute top-6 right-6 h-12 w-12 text-[#49beb7]/20" />
+          <Quote class="absolute top-6 right-6 h-12 w-12 text-secondary/20" />
           
           <div class="flex items-center gap-4 mb-6">
             <img
@@ -56,7 +56,7 @@ const testimonials = [
               class="w-16 h-16 rounded-full object-cover"
             />
             <div>
-              <div class="text-[#085163] mb-1">{{ testimonial.name }}</div>
+              <div class="text-primary mb-1">{{ testimonial.name }}</div>
               <div class="text-sm text-gray-600">{{ testimonial.major }}</div>
               <div class="text-xs text-gray-500">{{ testimonial.university }}</div>
             </div>
@@ -66,7 +66,7 @@ const testimonials = [
             <Star
               v-for="i in testimonial.rating"
               :key="i"
-              class="h-5 w-5 fill-[#49beb7] text-[#49beb7]"
+              class="h-5 w-5 fill-secondary text-secondary"
             />
           </div>
 
