@@ -1,6 +1,6 @@
 # Banco Universitario - Laboratorio II
 
-Frontend del proyecto **Banco Universitario**, desarrollado con **Vue 3 + Vite + Tailwind CSS 4**, siguiendo como referencia el diseño base trabajado en `Figma/src/app/components`.
+Frontend del proyecto **Banco Universitario**, desarrollado con **Vue 3 + Vite + Tailwind CSS 4**.
 
 ## Estado del proyecto
 
