@@ -5,6 +5,7 @@
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.0-06b6d4.svg?style=flat-square)](https://tailwindcss.com/)
 [![Vue Router](https://img.shields.io/badge/Vue_Router-5.0-35495e.svg?style=flat-square)](https://router.vuejs.org/)
 
+
 Repositorio oficial de la Landing Page del **Banco Universitario**. Este proyecto ha sido desarrollado como parte de las actividades prácticas de la asignatura **Laboratorio II**, sirviendo como sitio web público e interactivo orientado a la comunidad académica y estudiantil.
 
 La aplicación implementa una arquitectura modular en Vue 3 y una interfaz responsiva de alto rendimiento sincronizada con las especificaciones de diseño definidas en Figma.
