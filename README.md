@@ -144,4 +144,3 @@ npm run preview
 *   **Institución:** Banco Universitario
 *   **Asignatura:** Laboratorio II
 *   **Tipo de Proyecto:** Landing Page — Fin de Ciclo
-*   **Estudiante / Desarrollador:** Jendrick ([@jendrick19](https://github.com/jendrick19))
