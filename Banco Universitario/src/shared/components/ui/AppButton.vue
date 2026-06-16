@@ -40,16 +40,16 @@ defineProps({
       size === 'lg' && 'px-8 py-4 text-base font-semibold',
 
       variant === 'primary'
-        && 'border-2 border-[#085f63] bg-[#085f63] text-white hover:border-[#49beb7] hover:bg-[#49beb7] focus:border-[#49beb7] focus:bg-[#49beb7]',
+        && 'border-2 border-primary bg-primary text-white hover:border-secondary hover:bg-secondary focus:border-secondary focus:bg-secondary',
 
       variant === 'outline'
-        && 'border-2 border-[#085f63] text-[#085f63] hover:bg-[#085f63] hover:text-white focus:bg-[#085f63] focus:text-white',
+        && 'border-2 border-primary text-primary hover:bg-primary hover:text-white focus:bg-primary focus:text-white',
 
       variant === 'secondary'
-        && 'border-2 border-[#49beb7] bg-[#49beb7] text-white shadow-lg hover:border-[#085f63] hover:bg-[#085f63] hover:shadow-xl focus:bg-[#085f63]',
+        && 'border-2 border-secondary bg-secondary text-white shadow-lg hover:border-primary hover:bg-primary hover:shadow-xl focus:bg-primary',
 
       variant === 'white'
-        && 'border-2 border-white bg-white text-[#085f63] shadow-xl hover:bg-white/90 focus:bg-white/90',
+        && 'border-2 border-white bg-white text-primary shadow-xl hover:bg-white/90 focus:bg-white/90',
     ]"
   >
     <slot />

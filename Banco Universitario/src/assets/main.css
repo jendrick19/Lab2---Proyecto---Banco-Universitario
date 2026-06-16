@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "preline/variants.css";
 @plugin "@tailwindcss/forms";
 
 /* ─── 1. Variables de marca (igual que el Figma) ─── */
@@ -53,6 +52,8 @@
 
   html {
     font-size: var(--font-size);
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
   }
 
   body {

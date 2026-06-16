@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import logoImg from '@/assets/logo-no-background.png'
 
 const mobileMenuOpen = ref(false)
+const route = useRoute()
 </script>
 
 <template>
@@ -17,10 +19,16 @@ const mobileMenuOpen = ref(false)
         </div>
 
         <div class="hidden md:flex md:items-center md:space-x-8">
-          <a href="#inicio" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Inicio</a>
-          <a href="#nosotros" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Nosotros</a>
-          <a href="#servicios" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Servicios</a>
-          <a href="#contacto" class="text-[#085f63] transition-colors hover:text-[#49beb7]">Contacto</a>
+          <a href="/#inicio" class="text-primary transition-colors hover:text-secondary">Inicio</a>
+          <a href="/#nosotros" class="text-primary transition-colors hover:text-secondary">Nosotros</a>
+          <a href="/#servicios" class="text-primary transition-colors hover:text-secondary">Servicios</a>
+          <RouterLink
+            to="/contacto"
+            class="transition-colors"
+            :class="route.path === '/contacto' ? 'font-semibold text-secondary' : 'text-primary hover:text-secondary'"
+          >
+            Contacto
+          </RouterLink>
         </div>
 
         <div class="hidden md:flex md:items-center md:space-x-4">
@@ -30,7 +38,7 @@ const mobileMenuOpen = ref(false)
 
         <button
           type="button"
-          class="inline-flex items-center justify-center rounded-md p-2 text-[#085f63] transition-colors hover:bg-gray-100 hover:text-[#49beb7] md:hidden"
+          class="inline-flex items-center justify-center rounded-md p-2 text-primary transition-colors hover:bg-gray-100 hover:text-secondary md:hidden"
           :aria-expanded="mobileMenuOpen"
           aria-label="Abrir menu"
           @click="mobileMenuOpen = !mobileMenuOpen"
@@ -47,10 +55,17 @@ const mobileMenuOpen = ref(false)
 
     <div v-if="mobileMenuOpen" class="border-t border-gray-200 bg-white md:hidden">
       <div class="space-y-2 px-4 pb-4 pt-2">
-        <a href="#inicio" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Inicio</a>
-        <a href="#nosotros" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Nosotros</a>
-        <a href="#servicios" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Servicios</a>
-        <a href="#contacto" class="block rounded-md px-3 py-2 text-[#085f63] transition-colors hover:bg-[#49beb7] hover:text-white" @click="mobileMenuOpen = false">Contacto</a>
+        <a href="/#inicio" class="block rounded-md px-3 py-2 text-primary transition-colors hover:bg-secondary hover:text-white" @click="mobileMenuOpen = false">Inicio</a>
+        <a href="/#nosotros" class="block rounded-md px-3 py-2 text-primary transition-colors hover:bg-secondary hover:text-white" @click="mobileMenuOpen = false">Nosotros</a>
+        <a href="/#servicios" class="block rounded-md px-3 py-2 text-primary transition-colors hover:bg-secondary hover:text-white" @click="mobileMenuOpen = false">Servicios</a>
+        <RouterLink
+          to="/contacto"
+          class="block rounded-md px-3 py-2 transition-colors"
+          :class="route.path === '/contacto' ? 'bg-secondary text-white' : 'text-primary hover:bg-secondary hover:text-white'"
+          @click="mobileMenuOpen = false"
+        >
+          Contacto
+        </RouterLink>
         <div class="space-y-2 pt-4">
           <AppButton size="md" to="/login" variant="outline" class="w-full" @click="mobileMenuOpen = false">Ingresar</AppButton>
           <AppButton size="md" to="/registro" variant="primary" class="w-full" @click="mobileMenuOpen = false">Registrarse</AppButton>

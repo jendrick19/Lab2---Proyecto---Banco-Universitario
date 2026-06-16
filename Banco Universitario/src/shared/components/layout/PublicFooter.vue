@@ -21,7 +21,7 @@ const socialLinks = [
 </script>
 
 <template>
-  <footer class="bg-[#085163] text-white">
+  <footer class="bg-primary text-white">
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="flex flex-col items-center justify-between gap-6 md:flex-row">
         <div class="flex flex-col items-center gap-4 md:flex-row">
@@ -39,7 +39,7 @@ const socialLinks = [
               :href="social.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#49beb7]"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-secondary"
               :aria-label="social.name"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5" aria-hidden="true">
