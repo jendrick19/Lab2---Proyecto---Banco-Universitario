@@ -6,10 +6,12 @@ export const authRoutes = [
     path: '/login',
     name: 'login',
     component: LoginView,
+    meta: { guestOnly: true },
   },
   {
     path: '/registro',
     name: 'registro',
     component: RegisterView,
+    meta: { guestOnly: true },
   },
 ]
