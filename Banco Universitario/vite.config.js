@@ -15,4 +15,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    // El API del banco solo acepta orígenes de su WHITE_LIST (CORS).
+    // 8080 está permitido; strictPort evita que Vite caiga a otro puerto.
+    port: 8080,
+    strictPort: true,
+  },
 })
