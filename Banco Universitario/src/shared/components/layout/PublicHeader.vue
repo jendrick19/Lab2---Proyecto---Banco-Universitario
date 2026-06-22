@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import logoImg from '@/assets/logo-no-background.png'
+import { loggedIn } from '@/shared/utils/authStorage'
 
 const mobileMenuOpen = ref(false)
 const route = useRoute()
@@ -32,8 +33,13 @@ const route = useRoute()
         </div>
 
         <div class="hidden md:flex md:items-center md:space-x-4">
-          <AppButton size="md" to="/login" variant="outline">Ingresar</AppButton>
-          <AppButton size="md" to="/registro" variant="primary">Registrarse</AppButton>
+          <template v-if="loggedIn">
+            <AppButton size="md" to="/dashboard" variant="primary">Banca en línea</AppButton>
+          </template>
+          <template v-else>
+            <AppButton size="md" to="/login" variant="outline">Ingresar</AppButton>
+            <AppButton size="md" to="/registro" variant="primary">Registrarse</AppButton>
+          </template>
         </div>
 
         <button
@@ -67,8 +73,13 @@ const route = useRoute()
           Contacto
         </RouterLink>
         <div class="space-y-2 pt-4">
-          <AppButton size="md" to="/login" variant="outline" class="w-full" @click="mobileMenuOpen = false">Ingresar</AppButton>
-          <AppButton size="md" to="/registro" variant="primary" class="w-full" @click="mobileMenuOpen = false">Registrarse</AppButton>
+          <template v-if="loggedIn">
+            <AppButton size="md" to="/dashboard" variant="primary" class="w-full" @click="mobileMenuOpen = false">Banca en línea</AppButton>
+          </template>
+          <template v-else>
+            <AppButton size="md" to="/login" variant="outline" class="w-full" @click="mobileMenuOpen = false">Ingresar</AppButton>
+            <AppButton size="md" to="/registro" variant="primary" class="w-full" @click="mobileMenuOpen = false">Registrarse</AppButton>
+          </template>
         </div>
       </div>
     </div>
