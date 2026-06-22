@@ -23,3 +23,15 @@ export async function login({ email, password }) {
     throw new Error(message)
   }
 }
+
+export async function register(userData) {
+  try {
+    const { data: body } = await apiClient.post('/v1/public/client/user/register', userData)
+    return body?.data ?? {}
+  } catch (error) {
+    const message =
+      error.response?.data?.message ||
+      'No se pudo registrar el usuario. Inténtalo de nuevo.'
+    throw new Error(message)
+  }
+}
