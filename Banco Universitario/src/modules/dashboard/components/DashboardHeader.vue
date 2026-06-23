@@ -2,7 +2,7 @@
   <header class="w-full bg-white py-4 px-8 flex justify-end items-center border-b border-gray-100">
     <div class="flex items-center gap-3">
       <span class="text-slate-600 text-[15px]">
-        Hola, <span class="font-bold text-teal-800">Sebastian Castillo</span>
+         Hola, <span class="font-bold text-teal-800">{{ user?.name || 'Sebastian Castillo' }}</span>
       </span>
       
       <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 border border-teal-100">
@@ -16,5 +16,11 @@
 </template>
 
 <script setup>
-// En el futuro, aquí podemos recibir el nombre del usuario mediante props
+
+ defineProps({
+  user: {
+    type: Object,
+    default: () => ({ name: 'Usuario' }) 
+  }
+});
 </script>
