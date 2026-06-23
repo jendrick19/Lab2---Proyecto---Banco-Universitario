@@ -13,7 +13,7 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex">
+  <div class="flex-1 flex flex-col ml-72">
     <DashboardSidebar :on-logout="handleLogout" />
     <div class="flex-1 flex flex-col">
       <DashboardHeader :user="user" />
