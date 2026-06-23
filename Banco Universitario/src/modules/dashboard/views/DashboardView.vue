@@ -1,9 +1,18 @@
 <script setup>
+import { ref } from 'vue';
 import { useRouter } from "vue-router";
 import { getUser, clearSession } from "@/shared/utils/authStorage";
 import DashboardSidebar from "../components/DashboardSidebar.vue";
 import BalanceCard from "../components/BalanceCard.vue";
 import DashboardHeader from "../components/DashboardHeader.vue";
+import TransactionList from '../components/TransactionList.vue';
+
+// 1. Datos de prueba (esto es lo que vendrá de la API después)
+const transactions = ref([
+  { id: 1, date: '14 Abr 2026', description: 'Transferencia enviada a Jendrick', amount: '250.00', type: 'sent' },
+  { id: 2, date: '12 Abr 2026', description: 'Depósito recibido', amount: '500.00', type: 'received' },
+  { id: 3, date: '10 Abr 2026', description: 'Pago de matrícula', amount: '1200.00', type: 'sent' },
+]);
 
 const router = useRouter();
 const user = getUser();
@@ -24,10 +33,7 @@ const handleLogout = () => {
         
         <BalanceCard />
         
-        
-        <p class="text-xs text-gray-400">
-          Contenido del Dashboard en desarrollo...
-        </p>
+      <TransactionList :transactions="transactions" />  
       </main>
     </div>
   </div>
