@@ -30,7 +30,7 @@ const stats = [
 </script>
 
 <template>
-  <section class="py-20 bg-gradient-to-br from-primary to-secondary relative overflow-hidden">
+  <section class="py-8 lg:py-20 bg-gradient-to-br from-primary to-secondary relative overflow-hidden">
     <!-- Background image with overlay -->
     <div class="absolute inset-0 opacity-10">
       <img

@@ -9,7 +9,7 @@ const objetivos = [
 </script>
 
 <template>
-  <section id="nosotros" class="bg-gray-50 py-16 lg:py-24">
+  <section id="nosotros" class="bg-gray-50 py-8 lg:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <article class="rounded-2xl border border-gray-100 bg-white p-8 shadow-lg">

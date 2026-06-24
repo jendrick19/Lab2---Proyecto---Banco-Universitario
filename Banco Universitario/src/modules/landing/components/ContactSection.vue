@@ -32,7 +32,7 @@ const onContactSubmit = () => {}
 <template>
   <div id="contacto">
     <!-- Encabezado Principal -->
-    <section class="bg-gradient-to-br from-gray-50 to-white py-16 lg:py-24">
+    <section class="bg-gradient-to-br from-gray-50 to-white pt-8 pb-4 lg:py-24">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl sm:text-5xl lg:text-6xl mb-6 text-primary">
           Estamos para apoyarte
@@ -44,9 +44,9 @@ const onContactSubmit = () => {}
     </section>
 
     <!-- Formulario y Datos de Contacto -->
-    <section class="py-16 lg:py-24 bg-white">
+    <section class="pt-4 pb-8 lg:py-24 bg-white">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           <!-- Formulario - Lado Izquierdo -->
           <div>
             <ContactForm @submitted="onContactSubmit" />
@@ -86,10 +86,10 @@ const onContactSubmit = () => {}
     </section>
 
     <!-- Redes Sociales y Mapa -->
-    <section class="py-16 lg:py-24 bg-gray-50">
+    <section class="py-8 lg:py-24 bg-gray-50">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Redes Sociales -->
-        <div class="text-center mb-12">
+        <div class="text-center mb-8 lg:mb-12">
           <h2 class="text-2xl sm:text-3xl mb-6 text-primary">
             Síguenos en redes sociales
           </h2>
@@ -140,7 +140,7 @@ const onContactSubmit = () => {}
         </div>
 
         <!-- Mapa -->
-        <div class="mt-12">
+        <div class="mt-8 lg:mt-12">
           <h2 class="text-2xl sm:text-3xl text-center mb-8 text-primary">
             Nuestra Ubicación
           </h2>

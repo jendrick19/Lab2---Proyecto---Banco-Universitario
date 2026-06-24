@@ -14,9 +14,9 @@ const beneficios = [
 </script>
 
 <template>
-  <section id="beneficios" class="bg-white py-16 lg:py-24">
+  <section id="beneficios" class="bg-white py-8 lg:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+      <div class="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-2 lg:items-center">
         
         <div class="relative">
           <div class="overflow-hidden rounded-[2rem] shadow-lg">

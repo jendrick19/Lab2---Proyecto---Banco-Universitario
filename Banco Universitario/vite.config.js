@@ -18,6 +18,7 @@ export default defineConfig({
   server: {
     // El API del banco solo acepta orígenes de su WHITE_LIST (CORS).
     // 8080 está permitido; strictPort evita que Vite caiga a otro puerto.
+    host: true, // expone el server en la red local (acceso desde el móvil)
     port: 8080,
     strictPort: true,
   },
