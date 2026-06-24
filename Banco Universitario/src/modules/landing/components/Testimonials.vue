@@ -30,9 +30,9 @@ const testimonials = [
 </script>
 
 <template>
-  <section class="py-20 bg-white">
+  <section class="py-8 lg:py-20 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+      <div class="text-center mb-8 lg:mb-16">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl text-primary mb-4">
           Lo Que Dicen Nuestros Estudiantes
         </h2>

@@ -3,7 +3,7 @@ import { ArrowRight, Smartphone, Check } from 'lucide-vue-next';
 </script>
 
 <template>
-  <section class="py-20 bg-white">
+  <section class="py-8 lg:py-20 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center bg-gradient-to-r from-primary to-secondary rounded-3xl overflow-hidden shadow-2xl">
         <!-- Contenido Izquierda -->

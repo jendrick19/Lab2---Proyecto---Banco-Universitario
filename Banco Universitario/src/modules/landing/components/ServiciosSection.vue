@@ -31,9 +31,9 @@ const services = [
 </script>
 
 <template>
-  <section id="servicios" class="py-16 lg:py-24 bg-white">
+  <section id="servicios" class="py-8 lg:py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
+      <div class="text-center mb-8 lg:mb-12">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl mb-4 text-primary">
           Servicios pensados para ti
         </h2>

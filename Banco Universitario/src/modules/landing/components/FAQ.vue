@@ -37,9 +37,9 @@ const toggleFaq = (index) => {
 </script>
 
 <template>
-  <section class="bg-gray-50 py-20">
+  <section class="bg-gray-50 py-8 lg:py-20">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-16 text-center">
+      <div class="mb-8 lg:mb-16 text-center">
         <h2 class="mb-4 text-3xl text-primary sm:text-4xl lg:text-5xl">
           Preguntas Frecuentes
         </h2>

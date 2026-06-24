@@ -3,7 +3,7 @@ import AppButton from '@/shared/components/ui/AppButton.vue'
 </script>
 
 <template>
-  <section id="inicio" class="relative overflow-hidden bg-white py-16 lg:py-24">
+  <section id="inicio" class="relative overflow-hidden bg-white py-8 lg:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="items-center gap-16 lg:grid lg:grid-cols-2">
         <div>
@@ -20,7 +20,7 @@ import AppButton from '@/shared/components/ui/AppButton.vue'
           </AppButton>
         </div>
 
-        <div class="mt-12 lg:mt-0">
+        <div class="mt-6 lg:mt-0">
           <div class="relative aspect-4/3 overflow-hidden rounded-2xl bg-gray-100 shadow-2xl">
             <img
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200"
