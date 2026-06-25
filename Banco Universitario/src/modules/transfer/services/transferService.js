@@ -15,6 +15,20 @@ export async function getBalance() {
 }
 
 /*
+ * getUserByAccount busca al beneficiario por su número de cuenta.
+ * Devuelve los datos del usuario { first_name, last_name, account_number, ... }
+ * o null si la cuenta no existe (404) o la petición falla.
+ */
+export async function getUserByAccount(accountNumber) {
+  try {
+    const { data: body } = await apiClient.get(`/v1/client/user/account/${accountNumber}`)
+    return body?.data ?? null
+  } catch {
+    return null
+  }
+}
+
+/*
  * translateTransferError convierte el error crudo del backend en un mensaje
  * claro para el usuario. El API responde con { message } traducido; se mapea
  * por código HTTP (404 es inequívoco: cuenta inexistente) y, para los 400,
