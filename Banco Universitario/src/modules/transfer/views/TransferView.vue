@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getUser, clearSession } from '@/shared/utils/authStorage'
-import { getBalance, createTransfer } from '../services/transferService'
+import { getBalance, createTransfer, getUserByAccount } from '../services/transferService'
 import DashboardSidebar from '@/modules/dashboard/components/DashboardSidebar.vue'
 import DashboardHeader from '@/modules/dashboard/components/DashboardHeader.vue'
 import LoadingOverlay from '../components/LoadingOverlay.vue'
@@ -12,10 +12,15 @@ const router = useRouter()
 const user = getUser()
 
 const saldoDisponible = ref(0)
+const ownAccount = ref('')
 
 const cuentaDestino = ref('')
 const monto = ref('')
 const concepto = ref('')
+
+const beneficiaryName = ref('') // Nombre del beneficiario si la cuenta existe.
+const accountError = ref('') // Error de la cuenta destino (propia o inexistente).
+const checkingAccount = ref(false) // true mientras se consulta al backend.
 
 const isLoading = ref(false)
 const showModal = ref(false)
@@ -25,13 +30,42 @@ const transferData = ref(null)
 const showLogoutModal = ref(false)
 
 onMounted(async () => {
+  ownAccount.value = getUser()?.account_number ?? ''
   saldoDisponible.value = await getBalance()
 })
 
-// La cuenta es válida si está vacía (estado neutro) o tiene exactamente 20 dígitos.
-const cuentaValida = computed(
-  () => cuentaDestino.value.length === 20 || cuentaDestino.value.length === 0,
-)
+// Valida la cuenta destino de forma reactiva apenas se completan los 20 dígitos:
+// 1) comparación local instantánea contra la cuenta propia,
+// 2) verificación del beneficiario contra el backend (con debounce).
+let accountCheckTimer = null
+let accountCheckToken = 0
+
+watch(cuentaDestino, (value) => {
+  beneficiaryName.value = ''
+  accountError.value = ''
+  checkingAccount.value = false
+  if (accountCheckTimer) clearTimeout(accountCheckTimer)
+
+  if (value.length !== 20) return
+
+  if (value === ownAccount.value) {
+    accountError.value = 'La cuenta ingresada es de tu propiedad. Ingresa una cuenta distinta a la tuya.'
+    return
+  }
+
+  checkingAccount.value = true
+  const token = ++accountCheckToken
+  accountCheckTimer = setTimeout(async () => {
+    const beneficiary = await getUserByAccount(value)
+    if (token !== accountCheckToken) return // Descarta respuestas obsoletas.
+    checkingAccount.value = false
+    if (!beneficiary) {
+      accountError.value = 'La cuenta ingresada no corresponde a ningún beneficiario.'
+    } else {
+      beneficiaryName.value = `${beneficiary.first_name} ${beneficiary.last_name}`.trim()
+    }
+  }, 450)
+})
 
 // El monto es válido si está vacío o es mayor a 0 y no supera el saldo disponible.
 const montoValido = computed(
@@ -40,11 +74,12 @@ const montoValido = computed(
     (parseFloat(monto.value) > 0 && parseFloat(monto.value) <= saldoDisponible.value),
 )
 
+// Solo se habilita el envío con un beneficiario confirmado y un monto válido.
 const formActivo = computed(
   () =>
-    cuentaValida.value &&
+    beneficiaryName.value !== '' &&
+    !checkingAccount.value &&
     montoValido.value &&
-    cuentaDestino.value !== '' &&
     monto.value !== '',
 )
 
@@ -81,7 +116,7 @@ const handleSubmit = async () => {
     })
 
     transferData.value = {
-      receptor: 'Destinatario',
+      receptor: beneficiaryName.value || 'Destinatario',
       cuenta: cuentaDestino.value,
       monto: monto.value,
       fecha,
@@ -102,6 +137,8 @@ const handleCloseModal = () => {
   cuentaDestino.value = ''
   monto.value = ''
   concepto.value = ''
+  beneficiaryName.value = ''
+  accountError.value = ''
 }
 
 const handleLogout = () => {
@@ -167,14 +204,20 @@ const cancelLogout = () => {
                   maxlength="20"
                   :class="[
                     'w-full px-4 py-3 rounded-lg border transition-colors outline-none',
-                    !cuentaValida
+                    accountError
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-                      : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20',
+                      : beneficiaryName
+                        ? 'border-green-400 bg-green-50 focus:border-green-500 focus:ring-2 focus:ring-green-200'
+                        : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20',
                   ]"
                 />
-                <p :class="['mt-1.5 text-sm', !cuentaValida ? 'text-red-600' : 'text-gray-500']">
-                  <span v-if="cuentaDestino.length > 0">{{ cuentaDestino.length }}/20 dígitos</span>
-                  <span v-if="!cuentaValida"> - Debe tener exactamente 20 caracteres</span>
+                <p v-if="accountError" class="mt-1.5 text-sm text-red-600">{{ accountError }}</p>
+                <p v-else-if="checkingAccount" class="mt-1.5 text-sm text-gray-500">Verificando cuenta...</p>
+                <p v-else-if="beneficiaryName" class="mt-1.5 text-sm text-green-600">
+                  Beneficiario: {{ beneficiaryName }}
+                </p>
+                <p v-else-if="cuentaDestino.length > 0" class="mt-1.5 text-sm text-gray-500">
+                  {{ cuentaDestino.length }}/20 dígitos
                 </p>
               </div>
 
