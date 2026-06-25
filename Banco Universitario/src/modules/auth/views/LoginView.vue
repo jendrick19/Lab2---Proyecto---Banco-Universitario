@@ -15,15 +15,15 @@ const formData = reactive({
 })
 
 const handleSubmit = async () => {
-  //if (!formData.correo || !formData.password) {
-  //  return
-  //}
+  if (!formData.correo || !formData.password) {
+    return
+  }
 
-  //errorMessage.value = ''
-  // Activar estado de loading
-  //isLoading.value = true
+  errorMessage.value = ''
+   //Activar estado de loading
+  isLoading.value = true
 
- /* try {
+ try {
     // Autenticación real contra el bank-service. El token se guarda en localStorage.
     await login({ email: formData.correo, password: formData.password })
     router.push('/dashboard')
@@ -31,9 +31,7 @@ const handleSubmit = async () => {
     errorMessage.value = error.message
   } finally {
     isLoading.value = false
-  }*/
-  localStorage.setItem('user', JSON.stringify({ first_name: 'Sebastian', last_name: 'Castillo' }))
-  router.push('/dashboard')
+  }
 }
 </script>
 
