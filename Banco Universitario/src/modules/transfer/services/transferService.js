@@ -15,6 +15,31 @@ export async function getBalance() {
 }
 
 /*
+ * translateTransferError convierte el error crudo del backend en un mensaje
+ * claro para el usuario. El API responde con { message } traducido; se mapea
+ * por código HTTP (404 es inequívoco: cuenta inexistente) y, para los 400,
+ * por el texto del mensaje, con un respaldo genérico.
+ */
+function translateTransferError(error) {
+  const status = error.response?.status
+  const apiMessage = error.response?.data?.message ?? ''
+
+  if (status === 404) {
+    return 'La cuenta ingresada no corresponde a ningún beneficiario.'
+  }
+
+  if (apiMessage.includes('propia billetera')) {
+    return 'La cuenta ingresada es de tu propiedad. Ingresa una cuenta distinta a la tuya.'
+  }
+
+  if (apiMessage.includes('Saldo insuficiente')) {
+    return 'No tienes saldo suficiente para realizar esta transferencia.'
+  }
+
+  return apiMessage || 'No se pudo completar la transferencia. Inténtalo de nuevo.'
+}
+
+/*
  * createTransfer ejecuta una transferencia creando un movimiento de débito.
  * El backend (POST /v1/client/movement) descuenta el saldo del emisor y
  * acredita la cuenta destino. Espera { description, account_number, amount }.
@@ -29,9 +54,6 @@ export async function createTransfer({ accountNumber, amount, description }) {
     })
     return body?.data ?? {}
   } catch (error) {
-    const message =
-      error.response?.data?.message ||
-      'No se pudo completar la transferencia. Inténtalo de nuevo.'
-    throw new Error(message)
+    throw new Error(translateTransferError(error))
   }
 }
