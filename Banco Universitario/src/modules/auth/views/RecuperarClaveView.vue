@@ -287,7 +287,7 @@ const goBackToLogin = () => {
                   :type="showPassword ? 'text' : 'password'"
                   v-model="newPassword"
                   @input="clearError('newPassword')"
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="Mínimo 8 caracteres"
                   :class="[
                     'w-full pl-11 pr-11 py-3 rounded-lg border transition-colors outline-none',
                     errors.newPassword
