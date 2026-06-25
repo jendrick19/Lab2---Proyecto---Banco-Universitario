@@ -22,29 +22,21 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'BalanceCard',
-  props: {
-    // Título de la tarjeta (por si la API maneja cuenta corriente, ahorros, etc.)
-    title: {
-      type: String,
-      default: 'Saldo Disponible'
-    },
-    // El valor numérico puro que vendrá de la API de Postman
-    balance: {
-      type: Number,
-      default: 15500.00 
-    }
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  balance: {
+    type: [Number, String],
+    default: 0
   },
-  computed: {
-    // Esta función formatea el número automáticamente
-    formattedBalance() {
-      return this.balance.toLocaleString('es-VE', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
+  title: {
+    type: String,
+    default: 'Saldo Disponible'
   }
-}
+})
+
+const formattedBalance = computed(() => {
+  return Number(props.balance).toLocaleString('es-VE', { minimumFractionDigits: 2 })
+})
 </script>
