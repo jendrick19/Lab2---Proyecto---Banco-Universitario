@@ -1,0 +1,274 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getUser, clearSession } from '@/shared/utils/authStorage'
+import { getBalance, createTransfer } from '../services/transferService'
+import DashboardSidebar from '@/modules/dashboard/components/DashboardSidebar.vue'
+import DashboardHeader from '@/modules/dashboard/components/DashboardHeader.vue'
+import LoadingOverlay from '../components/LoadingOverlay.vue'
+import TransferSuccessModal from '../components/TransferSuccessModal.vue'
+
+const router = useRouter()
+const user = getUser()
+
+const saldoDisponible = ref(0)
+
+const cuentaDestino = ref('')
+const monto = ref('')
+const concepto = ref('')
+
+const isLoading = ref(false)
+const showModal = ref(false)
+const errorMessage = ref('')
+const transferData = ref(null)
+
+const showLogoutModal = ref(false)
+
+onMounted(async () => {
+  saldoDisponible.value = await getBalance()
+})
+
+// La cuenta es válida si está vacía (estado neutro) o tiene exactamente 20 dígitos.
+const cuentaValida = computed(
+  () => cuentaDestino.value.length === 20 || cuentaDestino.value.length === 0,
+)
+
+// El monto es válido si está vacío o es mayor a 0 y no supera el saldo disponible.
+const montoValido = computed(
+  () =>
+    monto.value === '' ||
+    (parseFloat(monto.value) > 0 && parseFloat(monto.value) <= saldoDisponible.value),
+)
+
+const formActivo = computed(
+  () =>
+    cuentaValida.value &&
+    montoValido.value &&
+    cuentaDestino.value !== '' &&
+    monto.value !== '',
+)
+
+const formattedSaldo = computed(() =>
+  Number(saldoDisponible.value).toLocaleString('es-VE', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }),
+)
+
+// Solo permite dígitos y limita a 20 caracteres mientras el usuario escribe.
+const onCuentaInput = (event) => {
+  cuentaDestino.value = event.target.value.replace(/\D/g, '').slice(0, 20)
+}
+
+const handleSubmit = async () => {
+  errorMessage.value = ''
+  if (!formActivo.value) return
+
+  isLoading.value = true
+  try {
+    await createTransfer({
+      accountNumber: cuentaDestino.value,
+      amount: monto.value,
+      description: concepto.value || 'Transferencia',
+    })
+
+    const fecha = new Date().toLocaleDateString('es-VE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+
+    transferData.value = {
+      receptor: 'Destinatario',
+      cuenta: cuentaDestino.value,
+      monto: monto.value,
+      fecha,
+    }
+
+    showModal.value = true
+    // Refresca el saldo tras la transferencia exitosa.
+    saldoDisponible.value = await getBalance()
+  } catch (error) {
+    errorMessage.value = error.message
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCloseModal = () => {
+  showModal.value = false
+  cuentaDestino.value = ''
+  monto.value = ''
+  concepto.value = ''
+}
+
+const handleLogout = () => {
+  showLogoutModal.value = true
+}
+
+const confirmLogout = () => {
+  clearSession()
+  router.push('/login')
+}
+
+const cancelLogout = () => {
+  showLogoutModal.value = false
+}
+</script>
+
+<template>
+  <div class="min-h-screen bg-gray-50 flex">
+    <DashboardSidebar :on-logout="handleLogout" />
+
+    <div class="flex-1 flex flex-col ml-72">
+      <DashboardHeader :user="user" />
+
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-3xl mx-auto px-8 py-8">
+          <h1 class="text-3xl font-semibold mb-6 text-primary">Realizar Transferencia</h1>
+
+          <!-- Saldo disponible -->
+          <div class="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-lg p-6 mb-8">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3v3a1 1 0 0 1-1 1H6a3 3 0 0 1-3-3V5"/></svg>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Tu saldo disponible</p>
+                <p class="text-2xl font-semibold text-primary">Bs. {{ formattedSaldo }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <!-- Error de la API -->
+            <div
+              v-if="errorMessage"
+              class="mb-6 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+            >
+              {{ errorMessage }}
+            </div>
+
+            <form @submit.prevent="handleSubmit" class="space-y-6">
+              <!-- Cuenta destino -->
+              <div>
+                <label for="cuentaDestino" class="block text-sm font-medium text-gray-700 mb-2">
+                  Número de Cuenta
+                </label>
+                <input
+                  id="cuentaDestino"
+                  type="text"
+                  :value="cuentaDestino"
+                  @input="onCuentaInput"
+                  placeholder="Ingrese 20 dígitos"
+                  maxlength="20"
+                  :class="[
+                    'w-full px-4 py-3 rounded-lg border transition-colors outline-none',
+                    !cuentaValida
+                      ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+                      : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20',
+                  ]"
+                />
+                <p :class="['mt-1.5 text-sm', !cuentaValida ? 'text-red-600' : 'text-gray-500']">
+                  <span v-if="cuentaDestino.length > 0">{{ cuentaDestino.length }}/20 dígitos</span>
+                  <span v-if="!cuentaValida"> - Debe tener exactamente 20 caracteres</span>
+                </p>
+              </div>
+
+              <!-- Monto -->
+              <div>
+                <label for="monto" class="block text-sm font-medium text-gray-700 mb-2">
+                  Monto a Transferir
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Bs.</span>
+                  <input
+                    id="monto"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    v-model="monto"
+                    placeholder="0.00"
+                    :class="[
+                      'w-full pl-12 pr-4 py-3 rounded-lg border transition-colors outline-none',
+                      !montoValido
+                        ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+                        : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20',
+                    ]"
+                  />
+                </div>
+                <p v-if="!montoValido && monto !== ''" class="mt-1.5 text-sm text-red-600">
+                  El monto debe ser mayor a 0 y no superar tu saldo disponible
+                </p>
+              </div>
+
+              <!-- Concepto -->
+              <div>
+                <label for="concepto" class="block text-sm font-medium text-gray-700 mb-2">
+                  Concepto / Descripción
+                </label>
+                <textarea
+                  id="concepto"
+                  v-model="concepto"
+                  placeholder="Motivo de la transferencia"
+                  rows="3"
+                  maxlength="100"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors resize-none"
+                ></textarea>
+              </div>
+
+              <!-- Botón -->
+              <div class="pt-4">
+                <button
+                  type="submit"
+                  :disabled="!formActivo || isLoading"
+                  class="w-full py-4 rounded-lg font-semibold text-white bg-primary transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Ejecutar Transferencia
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Overlay de carga -->
+    <LoadingOverlay :is-open="isLoading" />
+
+    <!-- Modal de éxito -->
+    <TransferSuccessModal
+      v-if="transferData"
+      :open="showModal"
+      :transfer-data="transferData"
+      @close="handleCloseModal"
+    />
+
+    <!-- Modal de cerrar sesión -->
+    <div v-if="showLogoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div class="bg-white rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4">
+        <h2 class="text-xl font-bold text-gray-800 mb-2">¿Cerrar Sesión?</h2>
+        <p class="text-gray-600 mb-6">¿Estás seguro de que deseas salir de tu cuenta?</p>
+
+        <div class="flex items-center justify-end gap-3">
+          <button
+            @click="cancelLogout"
+            class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="confirmLogout"
+            class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+          >
+            Sí, cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
