@@ -15,6 +15,8 @@ const balance = ref(0);
 const apiTransactions = ref([]);
 const isLoading = ref(true);
 
+const showLogoutModal = ref(false);
+
 onMounted(async () => {
   isLoading.value = true;
   const data = await getDashboardData();
@@ -42,13 +44,21 @@ onMounted(async () => {
 });
 
 const handleLogout = () => {
+  showLogoutModal.value = true;
+};
+
+const confirmLogout = () => {
   clearSession();
   router.push("/login"); // using correct /auth/login based on earlier steps
+};
+
+const cancelLogout = () => {
+  showLogoutModal.value = false;
 };
 </script>
 
 <template>
- <div class="min-h-screen bg-gray-50 flex">
+  <div class="min-h-screen bg-gray-50 flex">
     <DashboardSidebar :on-logout="handleLogout" />
     <div class="flex-1 flex flex-col ml-72">
 
@@ -64,6 +74,29 @@ const handleLogout = () => {
         
         <TransactionList :transactions="apiTransactions" />  
       </main>
+    </div>
+
+    <!-- Modal de Cerrar Sesión -->
+    <div v-if="showLogoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div class="bg-white rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4">
+        <h2 class="text-xl font-bold text-gray-800 mb-2">¿Cerrar Sesión?</h2>
+        <p class="text-gray-600 mb-6">¿Estás seguro de que deseas salir de tu cuenta?</p>
+        
+        <div class="flex items-center justify-end gap-3">
+          <button 
+            @click="cancelLogout"
+            class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-colors"
+          >
+            Cancelar
+          </button>
+          <button 
+            @click="confirmLogout"
+            class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+          >
+            Sí, cerrar sesión
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
