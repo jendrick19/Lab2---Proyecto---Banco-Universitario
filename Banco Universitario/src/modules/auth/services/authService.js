@@ -35,3 +35,27 @@ export async function register(userData) {
     throw new Error(message)
   }
 }
+
+export async function forgotPassword(email) {
+  try {
+    const { data } = await apiClient.post('/v1/public/client/user/forgot-password', { email })
+    return data
+  } catch (error) {
+    const message =
+      error.response?.data?.message ||
+      'No se pudo enviar el código. Intenta de nuevo.'
+    throw new Error(message)
+  }
+}
+
+export async function resetPassword(payload) {
+  try {
+    const { data } = await apiClient.post('/v1/public/client/user/reset-password', payload)
+    return data
+  } catch (error) {
+    const message =
+      error.response?.data?.message ||
+      'Código incorrecto o expirado. Verifica e intenta de nuevo.'
+    throw new Error(message)
+  }
+}
