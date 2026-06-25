@@ -75,7 +75,7 @@ const handleStep2 = async () => {
   else if (code.value.trim().length !== 6) nextErrors.code = 'El código debe tener 6 dígitos'
 
   if (!newPassword.value) nextErrors.newPassword = 'La nueva contraseña es obligatoria'
-  else if (newPassword.value.length < 6) nextErrors.newPassword = 'Mínimo 6 caracteres'
+  else if (newPassword.value.length < 8) nextErrors.newPassword = 'Mínimo 8 caracteres'
 
   if (Object.keys(nextErrors).length) {
     Object.assign(errors, nextErrors)
