@@ -65,7 +65,7 @@
 
     
     <div class="border-t border-slate-100 pt-4">
-      <button class="flex items-center gap-4 px-4 py-3 w-full rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50/60 font-medium transition-all duration-200 group">
+      <button @click="onLogout" class="flex items-center gap-4 px-4 py-3 w-full rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50/60 font-medium transition-all duration-200 group">
         <!-- Ícono de Cerrar Sesión contorno -->
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400 group-hover:text-red-500"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
         <span class="text-[16px] tracking-wide whitespace-nowrap">Cerrar Sesión</span>
@@ -75,8 +75,11 @@
   </aside>
 </template>
 
-<script>
-export default {
-  name: 'DashboardSidebar'
-}
+<script setup>
+defineProps({
+  onLogout: {
+    type: Function,
+    required: true
+  }
+})
 </script>
