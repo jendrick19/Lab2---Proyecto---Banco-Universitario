@@ -1,10 +1,10 @@
 <template>
   <div v-if="open">
     <!-- Overlay -->
-    <div class="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" @click="$emit('close')"></div>
+    <div class="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm" @click="$emit('close')"></div>
 
     <!-- Modal -->
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative" @click.stop>
         <!-- Ícono de éxito -->
         <div class="flex justify-center mb-6">

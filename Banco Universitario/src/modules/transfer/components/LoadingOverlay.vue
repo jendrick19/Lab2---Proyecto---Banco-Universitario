@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+    class="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm"
   >
     <div class="flex flex-col items-center gap-8">
       <!-- Spinner -->

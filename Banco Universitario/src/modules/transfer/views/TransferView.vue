@@ -292,7 +292,7 @@ const cancelLogout = () => {
     />
 
     <!-- Modal de cerrar sesión -->
-    <div v-if="showLogoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div v-if="showLogoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center">
       <div class="bg-white rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4">
         <h2 class="text-xl font-bold text-gray-800 mb-2">¿Cerrar Sesión?</h2>
         <p class="text-gray-600 mb-6">¿Estás seguro de que deseas salir de tu cuenta?</p>
