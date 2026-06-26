@@ -4,6 +4,7 @@ import PublicLayout from '@/app/layouts/PublicLayout.vue'
 import { landingRoutes } from '@/modules/landing/routes'
 import { authRoutes } from '@/modules/auth/routes'
 import { dashboardRoutes } from '@/modules/dashboard/routes'
+import { transferRoutes } from '@/modules/transfer/routes'
 import { isAuthenticated } from '@/shared/utils/authStorage'
 import { authGuard } from '@/app/router/authGuard'
 
@@ -15,6 +16,7 @@ const routes = [
   },
   ...authRoutes,
   ...dashboardRoutes,
+  ...transferRoutes,
 ]
 
 const router = createRouter({
