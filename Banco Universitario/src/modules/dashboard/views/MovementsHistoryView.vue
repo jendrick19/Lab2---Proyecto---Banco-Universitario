@@ -4,97 +4,28 @@ import { useRouter } from 'vue-router'
 import DashboardSidebar from '../components/DashboardSidebar.vue'
 import DashboardHeader from '../components/DashboardHeader.vue'
 import { getUser, clearSession } from '@/shared/utils/authStorage'
-import apiClient from '@/shared/utils/apiClient'
+import { getMovements } from '../services/dashboardService'
 
 const router = useRouter()
 const user = getUser()
 
 const movements = ref([])
 const isLoading = ref(true)
+const hasError = ref(false)
 const activeFilter = ref('all')
 const showLogoutModal = ref(false)
-
-const mockMovements = [
-  {
-    id: 1027,
-    created_at: '2026-04-14T10:30:00Z',
-    description: 'Transferencia enviada a Jendrick',
-    amount: 250,
-    multiplier: -1,
-    balance: 15500,
-  },
-  {
-    id: 1026,
-    created_at: '2026-04-12T15:45:00Z',
-    description: 'Depósito recibido',
-    amount: 500,
-    multiplier: 1,
-    balance: 15750,
-  },
-  {
-    id: 1025,
-    created_at: '2026-04-10T09:20:00Z',
-    description: 'Pago de matrícula',
-    amount: 1200,
-    multiplier: -1,
-    balance: 15250,
-  },
-  {
-    id: 1024,
-    created_at: '2026-04-08T12:10:00Z',
-    description: 'Transferencia recibida de María',
-    amount: 350,
-    multiplier: 1,
-    balance: 16450,
-  },
-  {
-    id: 1023,
-    created_at: '2026-04-05T16:30:00Z',
-    description: 'Compra en librería universitaria',
-    amount: 85.5,
-    multiplier: -1,
-    balance: 16100,
-  },
-]
-
-const normalizeMovement = (movement, index) => {
-  return {
-    id: movement.id ?? movement.reference ?? 1020 + index,
-    created_at: movement.created_at ?? movement.date ?? new Date().toISOString(),
-    description: movement.description ?? movement.concept ?? 'Movimiento bancario',
-    amount: Number(movement.amount ?? 0),
-    multiplier: Number(movement.multiplier ?? 1),
-    balance: Number(
-      movement.balance ??
-      movement.running_balance ??
-      movement.current_balance ??
-      movement.saldo ??
-      0
-    ),
-  }
-}
 
 const fetchMovements = async () => {
   try {
     isLoading.value = true
+    hasError.value = false
 
-    const response = await apiClient.get('/v1/client/movement?page=1&page_size=100')
-    console.log('Respuesta de movimientos:', response.data)
-
-    const apiData = response.data?.data ?? []
-
-    if (Array.isArray(apiData) && apiData.length > 0) {
-      movements.value = apiData.map(normalizeMovement)
-    } else if (Array.isArray(apiData?.movements) && apiData.movements.length > 0) {
-      movements.value = apiData.movements.map(normalizeMovement)
-    } else if (Array.isArray(apiData?.items) && apiData.items.length > 0) {
-      movements.value = apiData.items.map(normalizeMovement)
-    } else {
-      movements.value = mockMovements
-    }
+    const apiData = await getMovements({ page: 1, pageSize: 100 })
+    movements.value = Array.isArray(apiData) ? apiData : []
   } catch (error) {
     console.error('Error cargando movimientos:', error)
-    movements.value = mockMovements
+    hasError.value = true
+    movements.value = []
   } finally {
     isLoading.value = false
   }
@@ -211,6 +142,19 @@ onMounted(() => {
           >
             <div class="w-10 h-10 border-4 border-[#49beb7] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p class="font-medium">Cargando movimientos...</p>
+          </div>
+
+          <div
+            v-else-if="hasError"
+            class="p-12 flex flex-col items-center justify-center text-center text-slate-500"
+          >
+            <p class="font-medium mb-4">No se pudieron cargar los movimientos.</p>
+            <button
+              @click="fetchMovements"
+              class="px-6 py-2.5 rounded-xl bg-[#49beb7] text-white font-semibold hover:bg-[#3aa9a2] transition-colors"
+            >
+              Reintentar
+            </button>
           </div>
 
           <div
