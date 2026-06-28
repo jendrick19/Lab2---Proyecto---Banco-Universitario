@@ -1,11 +1,11 @@
 import LoginView from '@/modules/auth/views/LoginView.vue'
 import RegisterView from '@/modules/auth/views/RegisterView.vue'
-import RecuperarClaveView from '@/modules/auth/views/RecuperarClaveView.vue'
+import ResetPasswordView from '@/modules/auth/views/ResetPasswordView.vue'
 
 export const authRoutes = [
   {
-    path: '/login',
-    name: 'login',
+    path: '/iniciar-sesion',
+    name: 'iniciar-sesion',
     component: LoginView,
     meta: { guestOnly: true },
   },
@@ -18,7 +18,7 @@ export const authRoutes = [
   {
     path: '/recuperar-clave',
     name: 'recuperar-clave',
-    component: RecuperarClaveView,
+    component: ResetPasswordView,
     meta: { guestOnly: true },
   },
 ]

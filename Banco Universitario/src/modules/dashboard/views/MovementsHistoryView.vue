@@ -88,7 +88,7 @@ const handleLogout = () => {
 
 const confirmLogout = () => {
   clearSession()
-  router.push('/login')
+  router.push('/iniciar-sesion')
 }
 
 const cancelLogout = () => {

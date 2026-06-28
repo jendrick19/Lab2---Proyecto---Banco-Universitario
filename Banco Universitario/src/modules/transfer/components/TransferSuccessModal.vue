@@ -25,12 +25,12 @@
         <div class="bg-gray-50 rounded-lg p-6 mb-6 space-y-3">
           <div class="flex justify-between">
             <span class="text-gray-600">Receptor:</span>
-            <span class="font-medium text-gray-900">{{ transferData.receptor }}</span>
+            <span class="font-medium text-gray-900">{{ transferData.recipient }}</span>
           </div>
           <div class="h-px bg-gray-200"></div>
           <div class="flex justify-between">
             <span class="text-gray-600">Cuenta:</span>
-            <span class="font-medium text-gray-900 font-mono text-sm">{{ transferData.cuenta }}</span>
+            <span class="font-medium text-gray-900 font-mono text-sm">{{ transferData.account }}</span>
           </div>
           <div class="h-px bg-gray-200"></div>
           <div class="flex justify-between">
@@ -40,7 +40,7 @@
           <div class="h-px bg-gray-200"></div>
           <div class="flex justify-between">
             <span class="text-gray-600">Fecha:</span>
-            <span class="font-medium text-gray-900">{{ transferData.fecha }}</span>
+            <span class="font-medium text-gray-900">{{ transferData.date }}</span>
           </div>
         </div>
 
@@ -56,7 +56,7 @@
           </button>
 
           <router-link
-            to="/dashboard"
+            to="/panel"
             @click="$emit('close')"
             class="w-full py-3 rounded-lg font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
           >
@@ -80,14 +80,14 @@ const props = defineProps({
   transferData: {
     type: Object,
     required: true,
-    // { receptor, cuenta, monto, fecha }
+    // { recipient, account, amount, date }
   },
 })
 
 defineEmits(['close'])
 
 const formattedAmount = computed(() =>
-  Number(props.transferData.monto).toLocaleString('es-VE', {
+  Number(props.transferData.amount).toLocaleString('es-VE', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }),
@@ -97,23 +97,23 @@ const formattedAmount = computed(() =>
  * handleDownload genera y descarga un comprobante de la transferencia en texto plano.
  */
 const handleDownload = () => {
-  const comprobante = [
+  const receipt = [
     'COMPROBANTE DE TRANSFERENCIA',
     'Banco Universitario',
     '',
-    `Receptor: ${props.transferData.receptor}`,
-    `Cuenta: ${props.transferData.cuenta}`,
+    `Receptor: ${props.transferData.recipient}`,
+    `Cuenta: ${props.transferData.account}`,
     `Monto: Bs. ${formattedAmount.value}`,
-    `Fecha: ${props.transferData.fecha}`,
+    `Fecha: ${props.transferData.date}`,
     '',
     'Transferencia realizada exitosamente.',
   ].join('\n')
 
-  const blob = new Blob([comprobante], { type: 'text/plain' })
+  const blob = new Blob([receipt], { type: 'text/plain' })
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `comprobante_${props.transferData.fecha.replace(/[/:, ]/g, '_')}.txt`
+  a.download = `comprobante_${props.transferData.date.replace(/[/:, ]/g, '_')}.txt`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

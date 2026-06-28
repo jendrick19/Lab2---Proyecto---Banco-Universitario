@@ -4,7 +4,7 @@ import ContactView from '@/modules/landing/views/ContactView.vue'
 export const landingRoutes = [
   {
     path: '',
-    name: 'landing',
+    name: 'inicio',
     component: LandingView,
   },
   {

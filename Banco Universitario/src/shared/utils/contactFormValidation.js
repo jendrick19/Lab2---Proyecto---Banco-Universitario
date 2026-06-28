@@ -1,48 +1,48 @@
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 /**
- * @param {{ nombre: string, correo: string, asunto: string, mensaje: string }} form
+ * @param {{ name: string, email: string, subject: string, message: string }} form
  * @returns {Record<string, string>}
  */
 export function validateContactForm(form) {
   const errors = {}
 
-  const nombre = form.nombre.trim()
-  if (!nombre) {
-    errors.nombre = 'El nombre es obligatorio.'
-  } else if (nombre.length < 2) {
-    errors.nombre = 'El nombre debe tener al menos 2 caracteres.'
-  } else if (nombre.length > 80) {
-    errors.nombre = 'El nombre no puede superar 80 caracteres.'
-  } else if (!/^[\p{L}\s'.-]+$/u.test(nombre)) {
-    errors.nombre = 'El nombre solo puede contener letras y espacios.'
+  const name = form.name.trim()
+  if (!name) {
+    errors.name = 'El nombre es obligatorio.'
+  } else if (name.length < 2) {
+    errors.name = 'El nombre debe tener al menos 2 caracteres.'
+  } else if (name.length > 80) {
+    errors.name = 'El nombre no puede superar 80 caracteres.'
+  } else if (!/^[\p{L}\s'.-]+$/u.test(name)) {
+    errors.name = 'El nombre solo puede contener letras y espacios.'
   }
 
-  const correo = form.correo.trim()
-  if (!correo) {
-    errors.correo = 'El correo es obligatorio.'
-  } else if (!EMAIL_REGEX.test(correo)) {
-    errors.correo = 'Ingresa un correo electrónico válido.'
-  } else if (correo.length > 120) {
-    errors.correo = 'El correo no puede superar 120 caracteres.'
+  const email = form.email.trim()
+  if (!email) {
+    errors.email = 'El correo es obligatorio.'
+  } else if (!EMAIL_REGEX.test(email)) {
+    errors.email = 'Ingresa un correo electrónico válido.'
+  } else if (email.length > 120) {
+    errors.email = 'El correo no puede superar 120 caracteres.'
   }
 
-  const asunto = form.asunto.trim()
-  if (!asunto) {
-    errors.asunto = 'El asunto es obligatorio.'
-  } else if (asunto.length < 3) {
-    errors.asunto = 'El asunto debe tener al menos 3 caracteres.'
-  } else if (asunto.length > 100) {
-    errors.asunto = 'El asunto no puede superar 100 caracteres.'
+  const subject = form.subject.trim()
+  if (!subject) {
+    errors.subject = 'El asunto es obligatorio.'
+  } else if (subject.length < 3) {
+    errors.subject = 'El asunto debe tener al menos 3 caracteres.'
+  } else if (subject.length > 100) {
+    errors.subject = 'El asunto no puede superar 100 caracteres.'
   }
 
-  const mensaje = form.mensaje.trim()
-  if (!mensaje) {
-    errors.mensaje = 'El mensaje es obligatorio.'
-  } else if (mensaje.length < 10) {
-    errors.mensaje = 'El mensaje debe tener al menos 10 caracteres.'
-  } else if (mensaje.length > 1000) {
-    errors.mensaje = 'El mensaje no puede superar 1000 caracteres.'
+  const message = form.message.trim()
+  if (!message) {
+    errors.message = 'El mensaje es obligatorio.'
+  } else if (message.length < 10) {
+    errors.message = 'El mensaje debe tener al menos 10 caracteres.'
+  } else if (message.length > 1000) {
+    errors.message = 'El mensaje no puede superar 1000 caracteres.'
   }
 
   return errors

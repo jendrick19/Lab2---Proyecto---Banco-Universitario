@@ -49,7 +49,7 @@ const handleLogout = () => {
 
 const confirmLogout = () => {
   clearSession();
-  router.push("/login"); // using correct /auth/login based on earlier steps
+  router.push("/iniciar-sesion");
 };
 
 const cancelLogout = () => {

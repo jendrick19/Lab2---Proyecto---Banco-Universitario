@@ -9,17 +9,17 @@ import { validateContactForm } from '@/shared/utils/contactFormValidation'
 const emit = defineEmits(['submitted'])
 
 const form = reactive({
-  nombre: '',
-  correo: '',
-  asunto: '',
-  mensaje: '',
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
 })
 
 const errors = reactive({
-  nombre: '',
-  correo: '',
-  asunto: '',
-  mensaje: '',
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
 })
 
 const feedback = ref({
@@ -28,10 +28,10 @@ const feedback = ref({
 })
 
 const clearErrors = () => {
-  errors.nombre = ''
-  errors.correo = ''
-  errors.asunto = ''
-  errors.mensaje = ''
+  errors.name = ''
+  errors.email = ''
+  errors.subject = ''
+  errors.message = ''
 }
 
 const clearFieldError = (field) => {
@@ -42,10 +42,10 @@ const clearFieldError = (field) => {
 }
 
 const resetForm = () => {
-  form.nombre = ''
-  form.correo = ''
-  form.asunto = ''
-  form.mensaje = ''
+  form.name = ''
+  form.email = ''
+  form.subject = ''
+  form.message = ''
   clearErrors()
 }
 
@@ -67,10 +67,10 @@ const handleSubmit = () => {
   }
 
   emit('submitted', {
-    nombre: form.nombre.trim(),
-    correo: form.correo.trim(),
-    asunto: form.asunto.trim(),
-    mensaje: form.mensaje.trim(),
+    name: form.name.trim(),
+    email: form.email.trim(),
+    subject: form.subject.trim(),
+    message: form.message.trim(),
   })
 
   feedback.value = {
@@ -88,42 +88,42 @@ const handleSubmit = () => {
 
     <AppInputField
       id="contacto-nombre"
-      v-model="form.nombre"
+      v-model="form.name"
       label="Nombre completo"
       placeholder="Tu nombre completo"
       autocomplete="name"
-      :error="errors.nombre"
-      @update:model-value="clearFieldError('nombre')"
+      :error="errors.name"
+      @update:model-value="clearFieldError('name')"
     />
 
     <AppInputField
       id="contacto-correo"
-      v-model="form.correo"
+      v-model="form.email"
       type="email"
       label="Correo electrónico"
       placeholder="tucorreo@ejemplo.com"
       autocomplete="email"
-      :error="errors.correo"
-      @update:model-value="clearFieldError('correo')"
+      :error="errors.email"
+      @update:model-value="clearFieldError('email')"
     />
 
     <AppInputField
       id="contacto-asunto"
-      v-model="form.asunto"
+      v-model="form.subject"
       label="Asunto"
       placeholder="¿En qué podemos ayudarte?"
-      :error="errors.asunto"
-      @update:model-value="clearFieldError('asunto')"
+      :error="errors.subject"
+      @update:model-value="clearFieldError('subject')"
     />
 
     <AppTextareaField
       id="contacto-mensaje"
-      v-model="form.mensaje"
+      v-model="form.message"
       label="Mensaje"
       placeholder="Escribe tu mensaje aquí..."
       :rows="6"
-      :error="errors.mensaje"
-      @update:model-value="clearFieldError('mensaje')"
+      :error="errors.message"
+      @update:model-value="clearFieldError('message')"
     />
 
     <div

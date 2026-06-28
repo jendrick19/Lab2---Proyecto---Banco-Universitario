@@ -34,10 +34,10 @@ const route = useRoute()
 
         <div class="hidden md:flex md:items-center md:space-x-4">
           <template v-if="loggedIn">
-            <AppButton size="md" to="/dashboard" variant="primary">Banca en línea</AppButton>
+            <AppButton size="md" to="/panel" variant="primary">Banca en línea</AppButton>
           </template>
           <template v-else>
-            <AppButton size="md" to="/login" variant="outline">Ingresar</AppButton>
+            <AppButton size="md" to="/iniciar-sesion" variant="outline">Ingresar</AppButton>
             <AppButton size="md" to="/registro" variant="primary">Registrarse</AppButton>
           </template>
         </div>
@@ -74,10 +74,10 @@ const route = useRoute()
         </RouterLink>
         <div class="space-y-2 pt-4">
           <template v-if="loggedIn">
-            <AppButton size="md" to="/dashboard" variant="primary" class="w-full" @click="mobileMenuOpen = false">Banca en línea</AppButton>
+            <AppButton size="md" to="/panel" variant="primary" class="w-full" @click="mobileMenuOpen = false">Banca en línea</AppButton>
           </template>
           <template v-else>
-            <AppButton size="md" to="/login" variant="outline" class="w-full" @click="mobileMenuOpen = false">Ingresar</AppButton>
+            <AppButton size="md" to="/iniciar-sesion" variant="outline" class="w-full" @click="mobileMenuOpen = false">Ingresar</AppButton>
             <AppButton size="md" to="/registro" variant="primary" class="w-full" @click="mobileMenuOpen = false">Registrarse</AppButton>
           </template>
         </div>

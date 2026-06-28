@@ -3,8 +3,8 @@ import MovementsHistoryView from '@/modules/dashboard/views/MovementsHistoryView
 
 export const dashboardRoutes = [
   {
-    path: '/dashboard',
-    name: 'dashboard',
+    path: '/panel',
+    name: 'panel',
     component: DashboardView,
     meta: { requiresAuth: true },
   },

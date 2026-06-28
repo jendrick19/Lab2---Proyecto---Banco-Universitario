@@ -11,12 +11,12 @@ import TransferSuccessModal from '../components/TransferSuccessModal.vue'
 const router = useRouter()
 const user = getUser()
 
-const saldoDisponible = ref(0)
+const availableBalance = ref(0)
 const ownAccount = ref('')
 
-const cuentaDestino = ref('')
-const monto = ref('')
-const concepto = ref('')
+const destinationAccount = ref('')
+const amount = ref('')
+const description = ref('')
 
 const beneficiaryName = ref('') // Nombre del beneficiario si la cuenta existe.
 const accountError = ref('') // Error de la cuenta destino (propia o inexistente).
@@ -31,7 +31,7 @@ const showLogoutModal = ref(false)
 
 onMounted(async () => {
   ownAccount.value = getUser()?.account_number ?? ''
-  saldoDisponible.value = await getBalance()
+  availableBalance.value = await getBalance()
 })
 
 // Valida la cuenta destino de forma reactiva apenas se completan los 20 dígitos:
@@ -40,7 +40,7 @@ onMounted(async () => {
 let accountCheckTimer = null
 let accountCheckToken = 0
 
-watch(cuentaDestino, (value) => {
+watch(destinationAccount, (value) => {
   beneficiaryName.value = ''
   accountError.value = ''
   checkingAccount.value = false
@@ -68,46 +68,46 @@ watch(cuentaDestino, (value) => {
 })
 
 // El monto es válido si está vacío o es mayor a 0 y no supera el saldo disponible.
-const montoValido = computed(
+const isAmountValid = computed(
   () =>
-    monto.value === '' ||
-    (parseFloat(monto.value) > 0 && parseFloat(monto.value) <= saldoDisponible.value),
+    amount.value === '' ||
+    (parseFloat(amount.value) > 0 && parseFloat(amount.value) <= availableBalance.value),
 )
 
 // Solo se habilita el envío con un beneficiario confirmado y un monto válido.
-const formActivo = computed(
+const isFormActive = computed(
   () =>
     beneficiaryName.value !== '' &&
     !checkingAccount.value &&
-    montoValido.value &&
-    monto.value !== '',
+    isAmountValid.value &&
+    amount.value !== '',
 )
 
-const formattedSaldo = computed(() =>
-  Number(saldoDisponible.value).toLocaleString('es-VE', {
+const formattedBalance = computed(() =>
+  Number(availableBalance.value).toLocaleString('es-VE', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }),
 )
 
 // Solo permite dígitos y limita a 20 caracteres mientras el usuario escribe.
-const onCuentaInput = (event) => {
-  cuentaDestino.value = event.target.value.replace(/\D/g, '').slice(0, 20)
+const onAccountInput = (event) => {
+  destinationAccount.value = event.target.value.replace(/\D/g, '').slice(0, 20)
 }
 
 const handleSubmit = async () => {
   errorMessage.value = ''
-  if (!formActivo.value) return
+  if (!isFormActive.value) return
 
   isLoading.value = true
   try {
     await createTransfer({
-      accountNumber: cuentaDestino.value,
-      amount: monto.value,
-      description: concepto.value || 'Transferencia',
+      accountNumber: destinationAccount.value,
+      amount: amount.value,
+      description: description.value || 'Transferencia',
     })
 
-    const fecha = new Date().toLocaleDateString('es-VE', {
+    const date = new Date().toLocaleDateString('es-VE', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -116,15 +116,15 @@ const handleSubmit = async () => {
     })
 
     transferData.value = {
-      receptor: beneficiaryName.value || 'Destinatario',
-      cuenta: cuentaDestino.value,
-      monto: monto.value,
-      fecha,
+      recipient: beneficiaryName.value || 'Destinatario',
+      account: destinationAccount.value,
+      amount: amount.value,
+      date,
     }
 
     showModal.value = true
     // Refresca el saldo tras la transferencia exitosa.
-    saldoDisponible.value = await getBalance()
+    availableBalance.value = await getBalance()
   } catch (error) {
     errorMessage.value = error.message
   } finally {
@@ -134,9 +134,9 @@ const handleSubmit = async () => {
 
 const handleCloseModal = () => {
   showModal.value = false
-  cuentaDestino.value = ''
-  monto.value = ''
-  concepto.value = ''
+  destinationAccount.value = ''
+  amount.value = ''
+  description.value = ''
   beneficiaryName.value = ''
   accountError.value = ''
 }
@@ -147,7 +147,7 @@ const handleLogout = () => {
 
 const confirmLogout = () => {
   clearSession()
-  router.push('/login')
+  router.push('/iniciar-sesion')
 }
 
 const cancelLogout = () => {
@@ -174,7 +174,7 @@ const cancelLogout = () => {
               </div>
               <div>
                 <p class="text-sm text-gray-600">Tu saldo disponible</p>
-                <p class="text-2xl font-semibold text-primary">Bs. {{ formattedSaldo }}</p>
+                <p class="text-2xl font-semibold text-primary">Bs. {{ formattedBalance }}</p>
               </div>
             </div>
           </div>
@@ -192,14 +192,14 @@ const cancelLogout = () => {
             <form @submit.prevent="handleSubmit" class="space-y-6">
               <!-- Cuenta destino -->
               <div>
-                <label for="cuentaDestino" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="destinationAccount" class="block text-sm font-medium text-gray-700 mb-2">
                   Número de Cuenta
                 </label>
                 <input
-                  id="cuentaDestino"
+                  id="destinationAccount"
                   type="text"
-                  :value="cuentaDestino"
-                  @input="onCuentaInput"
+                  :value="destinationAccount"
+                  @input="onAccountInput"
                   placeholder="Ingrese 20 dígitos"
                   maxlength="20"
                   :class="[
@@ -216,46 +216,46 @@ const cancelLogout = () => {
                 <p v-else-if="beneficiaryName" class="mt-1.5 text-sm text-green-600">
                   Beneficiario: {{ beneficiaryName }}
                 </p>
-                <p v-else-if="cuentaDestino.length > 0" class="mt-1.5 text-sm text-gray-500">
-                  {{ cuentaDestino.length }}/20 dígitos
+                <p v-else-if="destinationAccount.length > 0" class="mt-1.5 text-sm text-gray-500">
+                  {{ destinationAccount.length }}/20 dígitos
                 </p>
               </div>
 
               <!-- Monto -->
               <div>
-                <label for="monto" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">
                   Monto a Transferir
                 </label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Bs.</span>
                   <input
-                    id="monto"
+                    id="amount"
                     type="number"
                     step="0.01"
                     min="0"
-                    v-model="monto"
+                    v-model="amount"
                     placeholder="0.00"
                     :class="[
                       'w-full pl-12 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                      !montoValido
+                      !isAmountValid
                         ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                         : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20',
                     ]"
                   />
                 </div>
-                <p v-if="!montoValido && monto !== ''" class="mt-1.5 text-sm text-red-600">
+                <p v-if="!isAmountValid && amount !== ''" class="mt-1.5 text-sm text-red-600">
                   El monto debe ser mayor a 0 y no superar tu saldo disponible
                 </p>
               </div>
 
               <!-- Concepto -->
               <div>
-                <label for="concepto" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
                   Concepto / Descripción
                 </label>
                 <textarea
-                  id="concepto"
-                  v-model="concepto"
+                  id="description"
+                  v-model="description"
                   placeholder="Motivo de la transferencia"
                   rows="3"
                   maxlength="100"
@@ -267,7 +267,7 @@ const cancelLogout = () => {
               <div class="pt-4">
                 <button
                   type="submit"
-                  :disabled="!formActivo || isLoading"
+                  :disabled="!isFormActive || isLoading"
                   class="w-full py-4 rounded-lg font-semibold text-white bg-primary transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Ejecutar Transferencia
