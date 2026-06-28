@@ -23,15 +23,15 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const isLoading = ref(false)
 const showSuccessModal = ref(false)
-const numeroCuenta = ref('')
+const accountNumber = ref('')
 
 const formData = reactive({
-  nombre: '',
-  apellido: '',
-  documento: '',
-  correo: '',
-  telefono: '',
-  fechaNacimiento: '',
+  firstName: '',
+  lastName: '',
+  documentNumber: '',
+  email: '',
+  phoneNumber: '',
+  birthDate: '',
   password: '',
   confirmPassword: ''
 })
@@ -47,31 +47,31 @@ const handleChange = (field: keyof typeof formData) => {
 const validateForm = () => {
   const newErrors: Record<string, string> = {}
 
-  if (!formData.nombre.trim()) {
-    newErrors.nombre = 'El nombre es obligatorio'
+  if (!formData.firstName.trim()) {
+    newErrors.firstName = 'El nombre es obligatorio'
   }
 
-  if (!formData.apellido.trim()) {
-    newErrors.apellido = 'El apellido es obligatorio'
+  if (!formData.lastName.trim()) {
+    newErrors.lastName = 'El apellido es obligatorio'
   }
 
-  if (!formData.documento.trim()) {
-    newErrors.documento = 'El documento es obligatorio'
+  if (!formData.documentNumber.trim()) {
+    newErrors.documentNumber = 'El documento es obligatorio'
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!formData.correo.trim()) {
-    newErrors.correo = 'El correo electrónico es obligatorio'
-  } else if (!emailRegex.test(formData.correo)) {
-    newErrors.correo = 'Ingresa un correo electrónico válido'
+  if (!formData.email.trim()) {
+    newErrors.email = 'El correo electrónico es obligatorio'
+  } else if (!emailRegex.test(formData.email)) {
+    newErrors.email = 'Ingresa un correo electrónico válido'
   }
 
-  if (!formData.telefono.trim()) {
-    newErrors.telefono = 'El teléfono es obligatorio'
+  if (!formData.phoneNumber.trim()) {
+    newErrors.phoneNumber = 'El teléfono es obligatorio'
   }
 
-  if (!formData.fechaNacimiento) {
-    newErrors.fechaNacimiento = 'La fecha de nacimiento es obligatoria'
+  if (!formData.birthDate) {
+    newErrors.birthDate = 'La fecha de nacimiento es obligatoria'
   }
 
   if (!formData.password) {
@@ -102,17 +102,17 @@ const handleSubmit = async () => {
 
   try {
     const mappedData = {
-      first_name: formData.nombre,
-      last_name: formData.apellido,
-      document_number: formData.documento,
-      birth_date: formData.fechaNacimiento ? `${formData.fechaNacimiento}T00:00:00Z` : '',
-      phone_number: formData.telefono,
-      email: formData.correo,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      document_number: formData.documentNumber,
+      birth_date: formData.birthDate ? `${formData.birthDate}T00:00:00Z` : '',
+      phone_number: formData.phoneNumber,
+      email: formData.email,
       password: formData.password
     }
 
     const data = await register(mappedData)
-    numeroCuenta.value = data.account_number
+    accountNumber.value = data.account_number
     showSuccessModal.value = true
   } catch (error: any) {
     apiError.value = error.message || 'Error al registrar la cuenta'
@@ -123,7 +123,7 @@ const handleSubmit = async () => {
 
 const handleCloseSuccessModal = () => {
   showSuccessModal.value = false
-  router.push('/login')
+  router.push('/iniciar-sesion')
 }
 </script>
 
@@ -135,12 +135,12 @@ const handleCloseSuccessModal = () => {
         <!-- Spinner Circular -->
         <div class="relative w-16 h-16">
           <div class="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-          <div 
+          <div
             class="absolute inset-0 border-4 border-transparent rounded-full animate-spin"
             style="border-top-color: #49beb7; border-right-color: #49beb7"
           ></div>
         </div>
-        
+
         <!-- Texto -->
         <p class="text-gray-700 text-lg font-medium">
           Generando tu número de cuenta...
@@ -172,11 +172,11 @@ const handleCloseSuccessModal = () => {
           <p class="text-center text-gray-700">
             Tu cuenta ha sido creada exitosamente. Este es tu número de cuenta:
           </p>
-          
+
           <div class="bg-gray-50 border-2 border-dashed border-secondary/40 rounded-lg p-4">
             <p class="text-xs text-gray-500 text-center mb-1">Número de Cuenta</p>
             <p class="text-xl font-mono text-center tracking-wider" style="color: #085f63">
-              {{ numeroCuenta }}
+              {{ accountNumber }}
             </p>
           </div>
 
@@ -230,7 +230,7 @@ const handleCloseSuccessModal = () => {
           <!-- Nombre y Apellido -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
                 Nombre <span class="text-red-500">*</span>
               </label>
               <div class="relative">
@@ -238,24 +238,24 @@ const handleCloseSuccessModal = () => {
                   <User class="w-5 h-5 text-gray-400" />
                 </div>
                 <input
-                  id="nombre"
+                  id="firstName"
                   type="text"
-                  v-model="formData.nombre"
-                  @input="handleChange('nombre')"
+                  v-model="formData.firstName"
+                  @input="handleChange('firstName')"
                   placeholder="Ej: Juan"
                   :class="[
                     'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                    errors.nombre
+                    errors.firstName
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                       : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20'
                   ]"
                 />
               </div>
-              <p v-if="errors.nombre" class="mt-1.5 text-sm text-red-600">{{ errors.nombre }}</p>
+              <p v-if="errors.firstName" class="mt-1.5 text-sm text-red-600">{{ errors.firstName }}</p>
             </div>
 
             <div>
-              <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
                 Apellido <span class="text-red-500">*</span>
               </label>
               <div class="relative">
@@ -263,26 +263,26 @@ const handleCloseSuccessModal = () => {
                   <User class="w-5 h-5 text-gray-400" />
                 </div>
                 <input
-                  id="apellido"
+                  id="lastName"
                   type="text"
-                  v-model="formData.apellido"
-                  @input="handleChange('apellido')"
+                  v-model="formData.lastName"
+                  @input="handleChange('lastName')"
                   placeholder="Ej: Pérez"
                   :class="[
                     'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                    errors.apellido
+                    errors.lastName
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                       : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20'
                   ]"
                 />
               </div>
-              <p v-if="errors.apellido" class="mt-1.5 text-sm text-red-600">{{ errors.apellido }}</p>
+              <p v-if="errors.lastName" class="mt-1.5 text-sm text-red-600">{{ errors.lastName }}</p>
             </div>
           </div>
 
           <!-- Documento -->
           <div>
-            <label for="documento" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="documentNumber" class="block text-sm font-medium text-gray-700 mb-2">
               Número de Documento <span class="text-red-500">*</span>
             </label>
             <div class="relative">
@@ -290,27 +290,27 @@ const handleCloseSuccessModal = () => {
                 <CreditCard class="w-5 h-5 text-gray-400" />
               </div>
               <input
-                id="documento"
+                id="documentNumber"
                 type="text"
-                v-model="formData.documento"
-                @input="handleChange('documento')"
+                v-model="formData.documentNumber"
+                @input="handleChange('documentNumber')"
                 placeholder="Ej: V-12345678"
                 :class="[
                   'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                  errors.documento
+                  errors.documentNumber
                     ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                     : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20'
                 ]"
               />
             </div>
-            <p v-if="errors.documento" class="mt-1.5 text-sm text-red-600">{{ errors.documento }}</p>
+            <p v-if="errors.documentNumber" class="mt-1.5 text-sm text-red-600">{{ errors.documentNumber }}</p>
           </div>
 
           <!-- Grid de 2 columnas para Correo y Teléfono -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Correo Electrónico -->
             <div>
-              <label for="correo" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                 Correo Electrónico <span class="text-red-500">*</span>
               </label>
               <div class="relative">
@@ -318,25 +318,25 @@ const handleCloseSuccessModal = () => {
                   <Mail class="w-5 h-5 text-gray-400" />
                 </div>
                 <input
-                  id="correo"
+                  id="email"
                   type="email"
-                  v-model="formData.correo"
-                  @input="handleChange('correo')"
+                  v-model="formData.email"
+                  @input="handleChange('email')"
                   placeholder="correo@ejemplo.com"
                   :class="[
                     'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                    errors.correo
+                    errors.email
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                       : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20'
                   ]"
                 />
               </div>
-              <p v-if="errors.correo" class="mt-1.5 text-sm text-red-600">{{ errors.correo }}</p>
+              <p v-if="errors.email" class="mt-1.5 text-sm text-red-600">{{ errors.email }}</p>
             </div>
 
             <!-- Teléfono -->
             <div>
-              <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
                 Teléfono <span class="text-red-500">*</span>
               </label>
               <div class="relative">
@@ -344,26 +344,26 @@ const handleCloseSuccessModal = () => {
                   <Phone class="w-5 h-5 text-gray-400" />
                 </div>
                 <input
-                  id="telefono"
+                  id="phoneNumber"
                   type="tel"
-                  v-model="formData.telefono"
-                  @input="handleChange('telefono')"
+                  v-model="formData.phoneNumber"
+                  @input="handleChange('phoneNumber')"
                   placeholder="+58 424-1234567"
                   :class="[
                     'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                    errors.telefono
+                    errors.phoneNumber
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                       : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20'
                   ]"
                 />
               </div>
-              <p v-if="errors.telefono" class="mt-1.5 text-sm text-red-600">{{ errors.telefono }}</p>
+              <p v-if="errors.phoneNumber" class="mt-1.5 text-sm text-red-600">{{ errors.phoneNumber }}</p>
             </div>
           </div>
 
           <!-- Fecha de Nacimiento -->
           <div>
-            <label for="fechaNacimiento" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="birthDate" class="block text-sm font-medium text-gray-700 mb-2">
               Fecha de Nacimiento <span class="text-red-500">*</span>
             </label>
             <div class="relative">
@@ -371,19 +371,19 @@ const handleCloseSuccessModal = () => {
                 <Calendar class="w-5 h-5 text-gray-400" />
               </div>
               <input
-                id="fechaNacimiento"
+                id="birthDate"
                 type="date"
-                v-model="formData.fechaNacimiento"
-                @input="handleChange('fechaNacimiento')"
+                v-model="formData.birthDate"
+                @input="handleChange('birthDate')"
                 :class="[
                   'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                  errors.fechaNacimiento
+                  errors.birthDate
                     ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                     : 'border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20'
                 ]"
               />
             </div>
-            <p v-if="errors.fechaNacimiento" class="mt-1.5 text-sm text-red-600">{{ errors.fechaNacimiento }}</p>
+            <p v-if="errors.birthDate" class="mt-1.5 text-sm text-red-600">{{ errors.birthDate }}</p>
           </div>
 
           <!-- Grid de 2 columnas para Contraseñas -->
@@ -481,12 +481,12 @@ const handleCloseSuccessModal = () => {
           </div>
         </form>
 
-        <!-- Link a Login -->
+        <!-- Link a Iniciar Sesión -->
         <div class="mt-6 text-center">
           <p class="text-sm text-gray-600">
             ¿Ya tienes una cuenta?
             <RouterLink
-              to="/login"
+              to="/iniciar-sesion"
               class="font-semibold transition-colors"
               style="color: #085f63"
             >

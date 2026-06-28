@@ -10,12 +10,12 @@ const showPassword = ref(false)
 const isLoading = ref(false)
 const errorMessage = ref('')
 const formData = reactive({
-  correo: '',
+  email: '',
   password: '',
 })
 
 const handleSubmit = async () => {
-  if (!formData.correo || !formData.password) {
+  if (!formData.email || !formData.password) {
     return
   }
 
@@ -25,8 +25,8 @@ const handleSubmit = async () => {
 
  try {
     // Autenticación real contra el bank-service. El token se guarda en localStorage.
-    await login({ email: formData.correo, password: formData.password })
-    router.push('/dashboard')
+    await login({ email: formData.email, password: formData.password })
+    router.push('/panel')
   } catch (error) {
     errorMessage.value = error.message
   } finally {
@@ -156,7 +156,7 @@ const handleSubmit = async () => {
               </div>
               <input
                 id="correo"
-                v-model="formData.correo"
+                v-model="formData.email"
                 type="email"
                 placeholder="tucorreo@ejemplo.com"
                 class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-11 pr-4 outline-none transition-colors focus:border-secondary focus:ring-2 focus:ring-secondary/20"

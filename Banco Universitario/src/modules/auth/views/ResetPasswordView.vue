@@ -25,7 +25,7 @@ const step = ref<Step>(1)
 const isLoading = ref(false)
 
 // Campos
-const correo = ref('')
+const email = ref('')
 const code = ref('')
 const newPassword = ref('')
 const showPassword = ref(false)
@@ -44,8 +44,8 @@ const clearError = (field: string) => {
 // ── Paso 1: POST /v1/public/client/user/forgot-password ──────────────────
 const handleStep1 = async () => {
   const nextErrors: Record<string, string> = {}
-  if (!correo.value.trim()) nextErrors.correo = 'El correo es obligatorio'
-  else if (!EMAIL_REGEX.test(correo.value)) nextErrors.correo = 'Ingresa un correo válido'
+  if (!email.value.trim()) nextErrors.email = 'El correo es obligatorio'
+  else if (!EMAIL_REGEX.test(email.value)) nextErrors.email = 'Ingresa un correo válido'
 
   if (Object.keys(nextErrors).length) {
     Object.assign(errors, nextErrors)
@@ -55,12 +55,12 @@ const handleStep1 = async () => {
   errorMessage.value = ''
   successMessage.value = ''
   isLoading.value = true
-  
+
   try {
-    await forgotPassword(correo.value)
+    await forgotPassword(email.value)
 
     step.value = 2
-    successMessage.value = `Código enviado. Revisa tu bandeja de entrada en ${correo.value}`
+    successMessage.value = `Código enviado. Revisa tu bandeja de entrada en ${email.value}`
   } catch (error: any) {
     errorMessage.value = error.message || 'No pudimos enviar el código. Intenta de nuevo.'
   } finally {
@@ -88,7 +88,7 @@ const handleStep2 = async () => {
 
   try {
     await resetPassword({
-      email: correo.value,
+      email: email.value,
       code: code.value,
       new_password: newPassword.value
     })
@@ -111,7 +111,7 @@ const goBackToStep1 = () => {
 }
 
 const goBackToLogin = () => {
-  router.push('/login')
+  router.push('/iniciar-sesion')
 }
 </script>
 
@@ -143,7 +143,7 @@ const goBackToLogin = () => {
 
       <!-- Tarjeta -->
       <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8">
-        
+
         <!-- Mensajes Globales -->
         <div v-if="errorMessage" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {{ errorMessage }}
@@ -176,7 +176,7 @@ const goBackToLogin = () => {
           <form @submit.prevent="handleStep1" class="space-y-5" novalidate>
             <div>
               <label
-                for="correo"
+                for="email"
                 class="block text-sm font-medium text-gray-700 mb-2"
               >
                 Correo Electrónico <span class="text-red-500">*</span>
@@ -186,20 +186,20 @@ const goBackToLogin = () => {
                   <Mail class="w-5 h-5 text-gray-400" />
                 </div>
                 <input
-                  id="correo"
+                  id="email"
                   type="email"
-                  v-model="correo"
-                  @input="clearError('correo')"
+                  v-model="email"
+                  @input="clearError('email')"
                   placeholder="tucorreo@ejemplo.com"
                   :class="[
                     'w-full pl-11 pr-4 py-3 rounded-lg border transition-colors outline-none',
-                    errors.correo
+                    errors.email
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                       : 'border-gray-300 focus:border-[#49beb7] focus:ring-2 focus:ring-[#49beb7]/20'
                   ]"
                 />
               </div>
-              <p v-if="errors.correo" class="mt-1.5 text-sm text-red-600">{{ errors.correo }}</p>
+              <p v-if="errors.email" class="mt-1.5 text-sm text-red-600">{{ errors.email }}</p>
             </div>
 
             <button
@@ -232,7 +232,7 @@ const goBackToLogin = () => {
             <p class="text-sm text-gray-600 leading-relaxed">
               Hemos enviado un código de 6 dígitos a
               <span class="font-semibold" style="color: #085f63">
-                {{ correo }}
+                {{ email }}
               </span>
               . Ingrésalo junto con tu nueva contraseña.
             </p>
@@ -362,7 +362,7 @@ const goBackToLogin = () => {
         <template v-if="step !== 3">
           <div class="mt-6 text-center">
             <RouterLink
-              to="/login"
+              to="/iniciar-sesion"
               class="inline-flex items-center gap-2 text-sm font-medium transition-colors"
               style="color: #085f63"
             >
