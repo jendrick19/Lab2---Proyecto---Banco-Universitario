@@ -5,6 +5,7 @@ import { getUser, clearSession } from "@/shared/utils/authStorage";
 import { getDashboardData } from "../services/dashboardService";
 import DashboardSidebar from "../components/DashboardSidebar.vue";
 import BalanceCard from "../components/BalanceCard.vue";
+import AccountCard from "../components/AccountCard.vue";
 import DashboardHeader from "../components/DashboardHeader.vue";
 import TransactionList from '../components/TransactionList.vue';
 
@@ -71,6 +72,7 @@ const cancelLogout = () => {
         </div>
 
         <BalanceCard :balance="balance" />
+        <AccountCard :accountNumber="user?.account_number" />
         
         <TransactionList :transactions="apiTransactions" />  
       </main>
