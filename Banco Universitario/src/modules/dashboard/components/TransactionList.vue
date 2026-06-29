@@ -5,6 +5,10 @@ defineProps({
     required: true,
   },
 });
+
+const formatAmount = (amount) => {
+  return Number(amount).toLocaleString('es-VE', { minimumFractionDigits: 2 });
+};
 </script>
 
 <template>
@@ -38,7 +42,7 @@ defineProps({
         </div>
 
         <span :class="['font-bold text-sm', tx.type === 'sent' ? 'text-red-500' : 'text-teal-500']">
-          {{ tx.type === 'sent' ? 'Bs. ' : '+ Bs. ' }}{{ tx.amount }}
+          {{ tx.type === 'sent' ? 'Bs. ' : '+ Bs. ' }}{{ formatAmount(tx.amount) }}
         </span>
       </div>
     </div>
