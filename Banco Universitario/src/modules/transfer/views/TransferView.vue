@@ -1,11 +1,15 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { Users } from 'lucide-vue-next'
 import { getUser, clearSession } from '@/shared/utils/authStorage'
 import { getBalance, createTransfer, getUserByAccount } from '../services/transferService'
+import { getContacts, createContact } from '@/modules/contacts/services/contactsService'
+import ContactPickerModal from '@/modules/contacts/components/ContactPickerModal.vue'
 import DashboardSidebar from '@/modules/dashboard/components/DashboardSidebar.vue'
 import DashboardHeader from '@/modules/dashboard/components/DashboardHeader.vue'
 import LoadingOverlay from '../components/LoadingOverlay.vue'
+import TransferConfirmModal from '../components/TransferConfirmModal.vue'
 import TransferSuccessModal from '../components/TransferSuccessModal.vue'
 
 const router = useRouter()
@@ -23,16 +27,85 @@ const accountError = ref('') // Error de la cuenta destino (propia o inexistente
 const checkingAccount = ref(false) // true mientras se consulta al backend.
 
 const isLoading = ref(false)
+const showConfirmModal = ref(false)
 const showModal = ref(false)
 const errorMessage = ref('')
 const transferData = ref(null)
 
+// Alias con el que el usuario tiene agendada la cuenta destino (si existe en su
+// agenda). Se deriva de la lista de contactos, por lo que aplica tanto si eligió
+// de la agenda como si escribió a mano una cuenta ya agendada.
+const contactAlias = computed(() => {
+  const match = contacts.value.find((c) => c.account_number === destinationAccount.value)
+  return match?.alias ?? ''
+})
+
+// Datos que se muestran en el modal de confirmación previo a ejecutar.
+const confirmDetails = computed(() => ({
+  recipient: beneficiaryName.value || 'Destinatario',
+  alias: contactAlias.value,
+  account: destinationAccount.value,
+  amount: amount.value,
+  description: description.value.trim(),
+}))
+
 const showLogoutModal = ref(false)
+
+// --- Agenda de contactos ---
+const contacts = ref([])
+const contactsLoading = ref(false)
+const showContactPicker = ref(false)
+
+// Estado del agendado post-transferencia (mostrado en el modal de éxito).
+const savedContact = ref(false) // true si el destinatario ya está (o quedó) agendado.
+const savingContact = ref(false)
+const saveContactError = ref('')
+
+async function loadContacts() {
+  contactsLoading.value = true
+  try {
+    contacts.value = await getContacts()
+  } catch {
+    contacts.value = []
+  } finally {
+    contactsLoading.value = false
+  }
+}
 
 onMounted(async () => {
   ownAccount.value = getUser()?.account_number ?? ''
   availableBalance.value = await getBalance()
+  loadContacts()
 })
+
+// Selecciona un contacto de la agenda: rellena la cuenta destino y dispara la
+// validación reactiva existente (watch de destinationAccount).
+const handleSelectContact = (contact) => {
+  destinationAccount.value = contact.account_number
+  showContactPicker.value = false
+}
+
+// Indica si una cuenta ya está en la agenda del usuario.
+const isAccountInContacts = (account) =>
+  contacts.value.some((c) => c.account_number === account)
+
+// Agenda al destinatario de la transferencia recién realizada.
+const handleSaveContact = async (alias) => {
+  saveContactError.value = ''
+  savingContact.value = true
+  try {
+    const created = await createContact({
+      accountNumber: transferData.value.account,
+      alias,
+    })
+    contacts.value.push(created)
+    savedContact.value = true
+  } catch (error) {
+    saveContactError.value = error.message
+  } finally {
+    savingContact.value = false
+  }
+}
 
 // Valida la cuenta destino de forma reactiva apenas se completan los 20 dígitos:
 // 1) comparación local instantánea contra la cuenta propia,
@@ -95,10 +168,25 @@ const onAccountInput = (event) => {
   destinationAccount.value = event.target.value.replace(/\D/g, '').slice(0, 20)
 }
 
-const handleSubmit = async () => {
+// El envío del formulario no ejecuta la transferencia: abre la confirmación.
+// Una transferencia es irreversible, por eso requiere un paso explícito de confirmación.
+const handleSubmit = () => {
+  errorMessage.value = ''
+  if (!isFormActive.value) return
+  showConfirmModal.value = true
+}
+
+const cancelTransfer = () => {
+  showConfirmModal.value = false
+}
+
+// confirmTransfer ejecuta realmente la transferencia tras la confirmación del usuario.
+const confirmTransfer = async () => {
   errorMessage.value = ''
   if (!isFormActive.value) return
 
+  // Cierra la confirmación y muestra el overlay de carga seguro.
+  showConfirmModal.value = false
   isLoading.value = true
   try {
     await createTransfer({
@@ -121,6 +209,11 @@ const handleSubmit = async () => {
       amount: amount.value,
       date,
     }
+
+    // Prepara el estado del agendado: si el destinatario ya está en la agenda,
+    // no se ofrece agendarlo de nuevo.
+    savedContact.value = isAccountInContacts(destinationAccount.value)
+    saveContactError.value = ''
 
     showModal.value = true
     // Refresca el saldo tras la transferencia exitosa.
@@ -192,9 +285,19 @@ const cancelLogout = () => {
             <form @submit.prevent="handleSubmit" class="space-y-6">
               <!-- Cuenta destino -->
               <div>
-                <label for="destinationAccount" class="block text-sm font-medium text-gray-700 mb-2">
-                  Número de Cuenta
-                </label>
+                <div class="flex items-center justify-between mb-2">
+                  <label for="destinationAccount" class="block text-sm font-medium text-gray-700">
+                    Número de Cuenta
+                  </label>
+                  <button
+                    type="button"
+                    @click="showContactPicker = true"
+                    class="flex items-center gap-1.5 text-sm font-medium text-secondary hover:text-primary transition-colors"
+                  >
+                    <Users class="w-4 h-4" />
+                    Elegir de mis contactos
+                  </button>
+                </div>
                 <input
                   id="destinationAccount"
                   type="text"
@@ -215,6 +318,9 @@ const cancelLogout = () => {
                 <p v-else-if="checkingAccount" class="mt-1.5 text-sm text-gray-500">Verificando cuenta...</p>
                 <p v-else-if="beneficiaryName" class="mt-1.5 text-sm text-green-600">
                   Beneficiario: {{ beneficiaryName }}
+                  <span v-if="contactAlias" class="text-gray-500">
+                    · En tu agenda: {{ contactAlias }}
+                  </span>
                 </p>
                 <p v-else-if="destinationAccount.length > 0" class="mt-1.5 text-sm text-gray-500">
                   {{ destinationAccount.length }}/20 dígitos
@@ -283,12 +389,34 @@ const cancelLogout = () => {
     <!-- Overlay de carga -->
     <LoadingOverlay :is-open="isLoading" />
 
+    <!-- Modal de confirmación (paso previo obligatorio: operación irreversible) -->
+    <TransferConfirmModal
+      :open="showConfirmModal"
+      :details="confirmDetails"
+      :loading="isLoading"
+      @confirm="confirmTransfer"
+      @cancel="cancelTransfer"
+    />
+
+    <!-- Selector de contactos (agenda) -->
+    <ContactPickerModal
+      :open="showContactPicker"
+      :contacts="contacts"
+      :loading="contactsLoading"
+      @close="showContactPicker = false"
+      @select="handleSelectContact"
+    />
+
     <!-- Modal de éxito -->
     <TransferSuccessModal
       v-if="transferData"
       :open="showModal"
       :transfer-data="transferData"
+      :already-saved="savedContact"
+      :saving="savingContact"
+      :save-error="saveContactError"
       @close="handleCloseModal"
+      @save-contact="handleSaveContact"
     />
 
     <!-- Modal de cerrar sesión -->
