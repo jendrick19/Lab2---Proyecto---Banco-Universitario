@@ -1,13 +1,14 @@
-# Banco Universitario — Plataforma de Landing Page
+# Banco Universitario — Aplicación Web de Banca
 
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.5+-4fc08d.svg?style=flat-square)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.0+-646cff.svg?style=flat-square)](https://vitejs.dev/)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.0-06b6d4.svg?style=flat-square)](https://tailwindcss.com/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.2-06b6d4.svg?style=flat-square)](https://tailwindcss.com/)
 [![Vue Router](https://img.shields.io/badge/Vue_Router-5.0-35495e.svg?style=flat-square)](https://router.vuejs.org/)
+[![Axios](https://img.shields.io/badge/Axios-1.18-5a29e4.svg?style=flat-square)](https://axios-http.com/)
 
-Repositorio oficial de la Landing Page del **Banco Universitario**. Este proyecto ha sido desarrollado como parte de las actividades prácticas de la asignatura **Laboratorio II**, sirviendo como sitio web público e interactivo orientado a la comunidad académica y estudiantil.
+Repositorio oficial del frontend del **Banco Universitario**. Este proyecto ha sido desarrollado como parte de las actividades prácticas de la asignatura **Laboratorio II**, e incluye tanto un sitio web público (landing) como una **plataforma de banca autenticada** para los usuarios registrados.
 
-La aplicación implementa una arquitectura modular en Vue 3 y una interfaz responsiva de alto rendimiento sincronizada con las especificaciones de diseño definidas en Figma.
+La aplicación implementa una arquitectura modular en Vue 3 y una interfaz responsiva de alto rendimiento sincronizada con las especificaciones de diseño definidas en Figma. La capa de banca consume una **API REST externa** mediante Axios, con autenticación por token JWT.
 
 ---
 
@@ -18,7 +19,8 @@ El sistema está construido sobre el siguiente stack de tecnologías:
 *   **Vue 3 (Composition API / `<script setup>`):** Framework de componentes reactivos.
 *   **Vite 7:** Entorno de compilación y empaquetado optimizado con Hot Module Replacement (HMR).
 *   **Tailwind CSS v4:** Motor de estilos en tiempo de compilación para el desarrollo de la interfaz responsiva.
-*   **Vue Router 5:** Gestor oficial de enrutamiento con comportamiento de desplazamiento suavizado (`scrollBehavior`) para enlaces con anclas (#).
+*   **Vue Router 5:** Gestor oficial de enrutamiento con comportamiento de desplazamiento suavizado (`scrollBehavior`) para enlaces con anclas (#) y guardas de navegación para rutas protegidas.
+*   **Axios:** Cliente HTTP para el consumo de la API REST, con interceptores para la inyección automática del token JWT y el manejo de sesiones expiradas (401).
 *   **Lucide Vue Next:** Librería de iconos vectoriales ligeros.
 
 ---
@@ -36,18 +38,31 @@ La interfaz gráfica sigue un sistema de diseño estricto definido en `src/asset
 
 ---
 
-## 3. Arquitectura de Módulos y Secciones
+## 3. Arquitectura de Módulos
 
-La aplicación se estructura en base a componentes modulares altamente reutilizables:
+La aplicación se organiza por dominios de negocio (`src/modules/`). Cada módulo agrupa sus vistas, componentes, rutas y servicios de API.
 
-1.  **Sección de Inicio (Hero):** Propuesta de valor inicial y botón de acción principal para registro de usuarios.
-2.  **Sección de Servicios:** Tarjetas de información sobre transacciones sin comisión, depósitos, retiros, pago de matrícula y cobro de becas.
-3.  **Sección Institucional (Nosotros):** Declaración formal de la misión, visión y objetivos estratégicos de la entidad bancaria.
-4.  **Estadísticas e Indicadores (Stats):** Métricas clave y beneficios del banco en el sector universitario.
-5.  **Testimonios:** Opiniones de estudiantes integradas de forma estática para validación de experiencia.
-6.  **Preguntas Frecuentes (FAQ):** Componente interactivo tipo acordeón para la resolución de dudas frecuentes.
-7.  **Formulario de Contacto:** Vista con validación dinámica de entradas en el frontend.
-8.  **Módulos de Autenticación (Auth):** Vistas de *Login* y *Registro* maquetadas para futura integración con servicios de backend.
+### 3.1 Sitio público (`landing`)
+
+Landing page pública compuesta por secciones modulares reutilizables:
+
+1.  **Inicio (Hero):** Propuesta de valor inicial y botón de acción principal para registro de usuarios.
+2.  **Servicios:** Tarjetas de información sobre transacciones sin comisión, depósitos, retiros, pago de matrícula y cobro de becas.
+3.  **Institucional (Nosotros):** Misión, visión y objetivos estratégicos de la entidad bancaria.
+4.  **Estadísticas (Stats):** Métricas clave y beneficios del banco en el sector universitario.
+5.  **Testimonios:** Opiniones de estudiantes integradas de forma estática.
+6.  **Preguntas Frecuentes (FAQ):** Componente interactivo tipo acordeón.
+7.  **Contacto:** Vista con formulario de validación dinámica en el frontend.
+
+### 3.2 Plataforma de banca (autenticada)
+
+Módulos que consumen la API REST y quedan protegidos tras el login mediante la guarda de navegación (`app/router/authGuard.js`):
+
+*   **Auth (`auth`):** Vistas de *Login*, *Registro* y *Restablecer contraseña*. La sesión (token JWT) se persiste con `shared/utils/authStorage.js` y se inyecta en cada petición vía `shared/utils/apiClient.js`.
+*   **Dashboard (`dashboard`):** Panel principal con tarjeta de saldo, datos de cuenta, listado de transacciones e historial de movimientos.
+*   **Transferencias (`transfer`):** Flujo de envío de dinero con estado de carga y modal de confirmación de éxito.
+*   **Contactos (`contacts`):** Gestión de contactos frecuentes del usuario para transferencias.
+*   **Perfil (`profile`):** Vista de datos personales de la cuenta.
 
 ---
 
@@ -61,19 +76,20 @@ Banco Universitario/
 ├── src/
 │   ├── app/                # Configuración global de la aplicación
 │   │   ├── layouts/        # Layouts compartidos (PublicLayout)
-│   │   └── router/         # Configuración de rutas (Vue Router)
+│   │   └── router/         # Enrutamiento (index.js) y guarda de auth (authGuard.js)
 │   ├── assets/             # Estilos globales y tokens del tema (main.css)
-│   ├── modules/            # Módulos específicos por dominio de negocio
-│   │   ├── auth/           # Módulo de Autenticación (Login, Registro)
-│   │   │   └── views/      # Vistas del módulo de autenticación
-│   │   └── landing/        # Módulo de la Landing Page pública
-│   │       ├── components/ # Secciones de la Landing (Hero, FAQ, Servicios, etc.)
-│   │       └── routes/     # Definición de rutas del módulo
+│   ├── modules/            # Módulos por dominio de negocio (views, components, routes, services)
+│   │   ├── auth/           # Login, Registro y Restablecer contraseña + authService
+│   │   ├── dashboard/      # Panel, saldo, cuenta, transacciones e historial + dashboardService
+│   │   ├── transfer/       # Flujo de transferencias + transferService
+│   │   ├── contacts/       # Gestión de contactos frecuentes
+│   │   ├── profile/        # Perfil del usuario
+│   │   └── landing/        # Landing Page pública (Hero, FAQ, Servicios, Contacto, etc.)
 │   ├── shared/             # Recursos genéricos y utilidades compartidas
-│   │   ├── components/     # Componentes de UI reutilizables (AppButton, AppInputField)
-│   │   └── utils/          # Utilidades globales (validación de formulario)
+│   │   ├── components/     # UI reutilizable (AppButton, AppInputField), forms y layout
+│   │   └── utils/          # apiClient.js (Axios+JWT), authStorage.js, validaciones
 │   ├── App.vue             # Componente raíz de Vue
-│   └── main.js             # Archivo de inicio del compilador
+│   └── main.js             # Punto de entrada: crea la app y monta el router
 ├── index.html              # Plantilla HTML base del navegador
 ├── package.json            # Configuración de dependencias y scripts npm
 └── vite.config.js          # Configuración del compilador Vite
@@ -114,7 +130,18 @@ cd "Banco Universitario"
 npm install
 ```
 
-### Paso 2: Servidor de Desarrollo
+### Paso 2: Configuración de la API
+
+La plataforma de banca consume una **API REST externa**. La URL se define mediante la variable de entorno `VITE_API_URL`; si no se especifica, se usa `http://localhost:3000` por defecto.
+
+Cree un archivo `.env` en la raíz del proyecto para apuntar a su instancia de la API:
+
+```bash
+# .env
+VITE_API_URL=http://localhost:3000
+```
+
+### Paso 3: Servidor de Desarrollo
 
 Inicie el entorno local de desarrollo con soporte para recarga en caliente (HMR):
 
@@ -124,7 +151,7 @@ npm run dev
 
 La consola indicará la dirección IP local (típicamente `http://localhost:5173`) para visualizar la aplicación.
 
-### Paso 3: Compilación para Producción
+### Paso 4: Compilación para Producción
 
 Para compilar y empaquetar los archivos de producción de manera optimizada:
 
@@ -142,5 +169,4 @@ npm run preview
 
 *   **Institución:** Banco Universitario
 *   **Asignatura:** Laboratorio II
-*   **Tipo de Proyecto:** Landing Page — Fin de Ciclo
-*   **Estudiante / Desarrollador:** Jendrick ([@jendrick19](https://github.com/jendrick19))
+*   **Tipo de Proyecto:** Aplicación Web de Banca (Landing + Plataforma autenticada) — Fin de Ciclo
