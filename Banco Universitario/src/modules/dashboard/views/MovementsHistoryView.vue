@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import DashboardSidebar from '../components/DashboardSidebar.vue'
 import DashboardHeader from '../components/DashboardHeader.vue'
 import { getUser, clearSession } from '@/shared/utils/authStorage'
+import { getMovements } from '../services/dashboardService'
 
 const router = useRouter()
 const user = getUser()
@@ -17,28 +18,20 @@ const showLogoutModal = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = ref(20)
 
-const generateMockMovements = () => {
-  return Array.from({ length: 45 }, (_, i) => {
-    const isExpense = i % 3 === 0;
-    return {
-      id: 1000 + i,
-      created_at: new Date(Date.now() - i * 86400000).toISOString(),
-      description: isExpense ? 'Pago móvil a terceros' : 'Transferencia recibida',
-      amount: (Math.random() * 5000) + 100,
-      multiplier: isExpense ? -1 : 1,
-      balance: 15000 - (i * 100)
-    };
-  });
-};
-
 const fetchMovements = async () => {
-  isLoading.value = true
-  hasError.value = false
+  try {
+    isLoading.value = true
+    hasError.value = false
 
-  setTimeout(() => {
-    movements.value = generateMockMovements()
+    const apiData = await getMovements({ page: 1, pageSize: 100 })
+    movements.value = Array.isArray(apiData) ? apiData : []
+  } catch (error) {
+    console.error(error)
+    hasError.value = true
+    movements.value = []
+  } finally {
     isLoading.value = false
-  }, 500)
+  }
 }
 
 const filteredMovements = computed(() => {
