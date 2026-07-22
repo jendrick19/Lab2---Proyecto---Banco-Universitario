@@ -17,6 +17,23 @@ export async function getContacts() {
   return body?.data ?? []
 }
 
+export async function getContactsPaginated(page = 1, pageSize = 20, alias = '') {
+  let url = `/v1/client/contact?page=${page}&page_size=${pageSize}`
+  if (alias) url += `&alias=${encodeURIComponent(alias)}`
+
+  try {
+    const response = await apiClient.get(url)
+    const contacts = response.data?.data ?? []
+    
+    const totalCount = parseInt(response.headers['x-pagination-total-count'] || '0', 10)
+    const totalPages = parseInt(response.headers['x-pagination-page-count'] || '1', 10)
+
+    return { contacts, totalCount, totalPages }
+  } catch (error) {
+    return { contacts: [], totalCount: 0, totalPages: 1 }
+  }
+}
+
 /*
  * translateContactError convierte el error crudo del backend en un mensaje
  * claro para el usuario, mapeado por código HTTP y texto del mensaje.
