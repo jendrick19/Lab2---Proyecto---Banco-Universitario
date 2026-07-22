@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getContacts, createContact, updateContact, deleteContact } from '../services/contactsService'
 import { Search, Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { getUser, clearSession } from '@/shared/utils/authStorage'
 
@@ -35,22 +36,30 @@ const editingContact = ref(null)
 const deletingContact = ref(null)
 const currentPage = ref(1)
 const alertMessage = ref(null)
-const itemsPerPage = 10
+const itemsPerPage = 20
 
-// Datos de ejemplo
-const contactos = ref([
-  { id: 1, alias: 'Chela', cuenta: '34567890123456789012', descripcion: 'Cafetín decanato' },
-  { id: 2, alias: 'María', cuenta: '12345678901234567890', descripcion: 'Amiga de la universidad' },
-  { id: 3, alias: 'Pedro', cuenta: '98765432109876543210', descripcion: 'Compañero de trabajo' },
-  { id: 4, alias: 'Ana', cuenta: '11223344556677889900', descripcion: 'Prima' },
-  { id: 5, alias: 'Carlos', cuenta: '55667788990011223344', descripcion: 'Vecino' },
-  { id: 6, alias: 'Lucía', cuenta: '99887766554433221100', descripcion: 'Compañera de gimnasio' },
-  { id: 7, alias: 'Jorge', cuenta: '22334455667788990011', descripcion: 'Profesor de inglés' },
-  { id: 8, alias: 'Sofia', cuenta: '66778899001122334455', descripcion: 'Hermana' },
-  { id: 9, alias: 'Roberto', cuenta: '33445566778899001122', descripcion: 'Jefe' },
-  { id: 10, alias: 'Elena', cuenta: '77889900112233445566', descripcion: 'Dentista' },
-  { id: 11, alias: 'Diego', cuenta: '44556677889900112233', descripcion: 'Amigo del colegio' },
-])
+const contactos = ref([])
+const isLoading = ref(false)
+
+const fetchContacts = async () => {
+  isLoading.value = true
+  try {
+    const data = await getContacts()
+    contactos.value = data.map(c => ({
+      ...c,
+      cuenta: c.account_number,
+      descripcion: c.description
+    }))
+  } catch (error) {
+    alert(error.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchContacts()
+})
 
 const filteredContactos = computed(() => {
   return contactos.value.filter(contacto =>
@@ -79,35 +88,48 @@ const handleDeleteClick = (contacto) => {
   showDeleteModal.value = true
 }
 
-const handleSaveContact = (contactoData) => {
+const handleSaveContact = async (contactoData) => {
   const isEditing = !!editingContact.value
   
-  if (editingContact.value) {
-    const index = contactos.value.findIndex(c => c.id === editingContact.value.id)
-    if (index !== -1) {
-      contactos.value[index] = { ...contactos.value[index], ...contactoData }
+  try {
+    if (isEditing) {
+      await updateContact(editingContact.value.id, {
+        alias: contactoData.alias,
+        description: contactoData.descripcion
+      })
+    } else {
+      await createContact({
+        accountNumber: contactoData.cuenta,
+        alias: contactoData.alias,
+        description: contactoData.descripcion
+      })
     }
-  } else {
-    const newId = Math.max(...contactos.value.map(c => c.id), 0) + 1
-    contactos.value.push({ id: newId, ...contactoData })
-  }
-  
-  showFormModal.value = false
-  
-  setTimeout(() => {
-    alertMessage.value = isEditing ? 'edit' : 'add'
-  }, 500)
-}
-
-const handleConfirmDelete = () => {
-  if (deletingContact.value) {
-    contactos.value = contactos.value.filter(c => c.id !== deletingContact.value.id)
-    showDeleteModal.value = false
-    deletingContact.value = null
+    
+    showFormModal.value = false
+    await fetchContacts()
     
     setTimeout(() => {
-      alertMessage.value = 'delete'
+      alertMessage.value = isEditing ? 'edit' : 'add'
     }, 500)
+  } catch (error) {
+    alert(error.message)
+  }
+}
+
+const handleConfirmDelete = async () => {
+  if (deletingContact.value) {
+    try {
+      await deleteContact(deletingContact.value.id)
+      showDeleteModal.value = false
+      deletingContact.value = null
+      await fetchContacts()
+      
+      setTimeout(() => {
+        alertMessage.value = 'delete'
+      }, 500)
+    } catch (error) {
+      alert(error.message)
+    }
   }
 }
 

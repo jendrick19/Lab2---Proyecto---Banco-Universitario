@@ -13,7 +13,7 @@ import apiClient from '@/shared/utils/apiClient'
  * Lanza el error para que la vista distinga "sin contactos" de un fallo real.
  */
 export async function getContacts() {
-  const { data: body } = await apiClient.get('/v1/client/contact')
+  const { data: body } = await apiClient.get('/v1/client/contact?page=1&page_size=99')
   return body?.data ?? []
 }
 
