@@ -1,10 +1,33 @@
 <script setup>
-defineProps({
+import { ref, computed } from 'vue';
+
+const props = defineProps({
   transactions: {
     type: Array,
     required: true,
   },
 });
+
+const currentPage = ref(1);
+const itemsPerPage = ref(20);
+
+const paginatedTransactions = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return props.transactions.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(props.transactions.length / itemsPerPage.value) || 1;
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
 
 const formatAmount = (amount) => {
   return Number(amount).toLocaleString('es-VE', { minimumFractionDigits: 2 });
@@ -16,7 +39,7 @@ const formatAmount = (amount) => {
     <h2 class="text-teal-800 font-bold text-lg p-6 pb-2">Últimos Movimientos</h2>
 
     <div class="flex flex-col">
-      <div v-for="tx in transactions" :key="tx.id"
+      <div v-for="tx in paginatedTransactions" :key="tx.id"
            class="flex items-center justify-between px-6 py-4 border-b border-gray-50 last:border-b-0">
         
         <div class="flex items-center gap-6">
@@ -45,6 +68,28 @@ const formatAmount = (amount) => {
           {{ tx.type === 'sent' ? 'Bs. ' : '+ Bs. ' }}{{ formatAmount(tx.amount) }}
         </span>
       </div>
+    </div>
+
+    <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl">
+      <button 
+        @click="prevPage" 
+        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        Anterior
+      </button>
+      
+      <span class="text-sm font-medium text-gray-500">
+        Página {{ currentPage }} de {{ totalPages }}
+      </span>
+      
+      <button 
+        @click="nextPage" 
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        Siguiente
+      </button>
     </div>
   </div>
 </template>
