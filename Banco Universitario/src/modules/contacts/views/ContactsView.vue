@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getContacts, createContact, updateContact, deleteContact } from '../services/contactsService'
+import { getContactsPaginated, createContact, updateContact, deleteContact } from '../services/contactsService'
 import { Search, Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { getUser, clearSession } from '@/shared/utils/authStorage'
 
@@ -40,16 +40,20 @@ const itemsPerPage = 20
 
 const contactos = ref([])
 const isLoading = ref(false)
+const totalPages = ref(1)
+const totalContactos = ref(0)
 
 const fetchContacts = async () => {
   isLoading.value = true
   try {
-    const data = await getContacts()
-    contactos.value = data.map(c => ({
+    const data = await getContactsPaginated(currentPage.value, itemsPerPage, searchTerm.value)
+    contactos.value = data.contacts.map(c => ({
       ...c,
       cuenta: c.account_number,
       descripcion: c.description
     }))
+    totalContactos.value = data.totalCount
+    totalPages.value = data.totalPages
   } catch (error) {
     alert(error.message)
   } finally {
@@ -61,17 +65,21 @@ onMounted(() => {
   fetchContacts()
 })
 
-const filteredContactos = computed(() => {
-  return contactos.value.filter(contacto =>
-    contacto.alias.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
+let searchTimeout
+watch(searchTerm, () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    currentPage.value = 1
+    fetchContacts()
+  }, 300)
 })
 
-const totalPages = computed(() => Math.ceil(filteredContactos.value.length / itemsPerPage))
+watch(currentPage, () => {
+  fetchContacts()
+})
+
 const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage)
 const endIndex = computed(() => startIndex.value + itemsPerPage)
-const currentContactos = computed(() => filteredContactos.value.slice(startIndex.value, endIndex.value))
-const totalContactos = computed(() => filteredContactos.value.length)
 
 const handleAddContact = () => {
   editingContact.value = null
@@ -167,7 +175,6 @@ const alertMessageText = computed(() => {
                   type="text"
                   placeholder="Buscar por alias..."
                   v-model="searchTerm"
-                  @input="currentPage = 1"
                   class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
                 />
               </div>
@@ -197,14 +204,14 @@ const alertMessageText = computed(() => {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  <tr v-if="currentContactos.length === 0">
+                  <tr v-if="contactos.length === 0">
                     <td colspan="4" class="px-6 py-12 text-center text-gray-500">
                       {{ searchTerm ? 'No se encontraron contactos' : 'No hay contactos registrados' }}
                     </td>
                   </tr>
                   <tr
                     v-else
-                    v-for="contacto in currentContactos"
+                    v-for="contacto in contactos"
                     :key="contacto.id"
                     class="hover:bg-gray-50 transition-colors"
                   >
