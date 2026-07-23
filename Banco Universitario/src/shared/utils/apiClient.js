@@ -19,10 +19,13 @@ apiClient.interceptors.request.use((config) => {
 })
 
 // Interceptor de respuesta: ante un 401, limpia la sesión local.
+// Las peticiones marcadas con skipSessionClear quedan exentas: hay endpoints
+// (p. ej. cambio de contraseña) donde el 401 significa "credencial incorrecta",
+// no "sesión expirada", y cerrar la sesión sería incorrecto.
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !error.config?.skipSessionClear) {
       clearSession()
     }
     return Promise.reject(error)

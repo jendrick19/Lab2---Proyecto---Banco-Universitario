@@ -62,7 +62,7 @@ Módulos que consumen la API REST y quedan protegidos tras el login mediante la 
 *   **Dashboard (`dashboard`):** Panel principal con tarjeta de saldo, datos de cuenta, listado de transacciones e historial de movimientos.
 *   **Transferencias (`transfer`):** Flujo de envío de dinero con estado de carga y modal de confirmación de éxito.
 *   **Contactos (`contacts`):** Gestión de contactos frecuentes del usuario para transferencias.
-*   **Perfil (`profile`):** Vista de datos personales de la cuenta.
+*   **Perfil (`profile`):** Consulta de los datos personales y del número de cuenta, y cambio de la contraseña de acceso.
 
 ---
 
