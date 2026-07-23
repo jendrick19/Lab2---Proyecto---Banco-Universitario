@@ -15,6 +15,9 @@ const hasError = ref(false)
 const activeFilter = ref('all')
 const showLogoutModal = ref(false)
 
+const currentPage = ref(1)
+const itemsPerPage = ref(20)
+
 const fetchMovements = async () => {
   try {
     isLoading.value = true
@@ -23,7 +26,7 @@ const fetchMovements = async () => {
     const apiData = await getMovements({ page: 1, pageSize: 100 })
     movements.value = Array.isArray(apiData) ? apiData : []
   } catch (error) {
-    console.error('Error cargando movimientos:', error)
+    console.error(error)
     hasError.value = true
     movements.value = []
   } finally {
@@ -46,6 +49,29 @@ const filteredMovements = computed(() => {
 
   return sorted
 })
+
+const paginatedMovements = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredMovements.value.slice(start, end)
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredMovements.value.length / itemsPerPage.value) || 1
+})
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--
+}
+
+const applyFilter = (filter) => {
+  activeFilter.value = filter
+  currentPage.value = 1
+}
 
 const formatDate = (date) => {
   if (!date) return 'Sin fecha'
@@ -118,21 +144,21 @@ onMounted(() => {
         <div class="flex items-center gap-3 mb-6">
           <button
             :class="getFilterClass('all')"
-            @click="activeFilter = 'all'"
+            @click="applyFilter('all')"
           >
             Todos
           </button>
 
           <button
             :class="getFilterClass('income')"
-            @click="activeFilter = 'income'"
+            @click="applyFilter('income')"
           >
             Ingresos
           </button>
 
           <button
             :class="getFilterClass('expense')"
-            @click="activeFilter = 'expense'"
+            @click="applyFilter('expense')"
           >
             Egresos
           </button>
@@ -167,65 +193,89 @@ onMounted(() => {
             No hay movimientos para mostrar.
           </div>
 
-          <div v-else class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead>
-                <tr class="border-b border-slate-200">
-                  <th class="px-6 py-5 text-[16px] font-semibold text-slate-700">
-                    ID/Ref
-                  </th>
+          <div v-else>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="border-b border-slate-200">
+                    <th class="px-6 py-5 text-[16px] font-semibold text-slate-700">
+                      ID/Ref
+                    </th>
 
-                  <th class="px-6 py-5 text-[16px] font-semibold text-slate-700">
-                    Fecha
-                  </th>
+                    <th class="px-6 py-5 text-[16px] font-semibold text-slate-700">
+                      Fecha
+                    </th>
 
-                  <th class="px-6 py-5 text-[16px] font-semibold text-slate-700">
-                    Descripción
-                  </th>
+                    <th class="px-6 py-5 text-[16px] font-semibold text-slate-700">
+                      Descripción
+                    </th>
 
-                  <th class="px-6 py-5 text-[16px] font-semibold text-slate-700 text-right">
-                    Monto
-                  </th>
+                    <th class="px-6 py-5 text-[16px] font-semibold text-slate-700 text-right">
+                      Monto
+                    </th>
 
-                  <th class="px-6 py-5 text-[16px] font-semibold text-slate-700 text-right">
-                    Saldo
-                  </th>
-                </tr>
-              </thead>
+                    <th class="px-6 py-5 text-[16px] font-semibold text-slate-700 text-right">
+                      Saldo
+                    </th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr
-                  v-for="movement in filteredMovements"
-                  :key="movement.id"
-                  class="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors"
-                >
-                  <td class="px-6 py-5 text-[16px] text-slate-600">
-                    #{{ movement.id }}
-                  </td>
-
-                  <td class="px-6 py-5 text-[16px] text-slate-600 whitespace-nowrap">
-                    {{ formatDate(movement.created_at) }}
-                  </td>
-
-                  <td class="px-6 py-5 text-[16px] text-slate-900">
-                    {{ movement.description }}
-                  </td>
-
-                  <td
-                    :class="[
-                      'px-6 py-5 text-[16px] font-medium text-right whitespace-nowrap',
-                      getAmountClass(movement)
-                    ]"
+                <tbody>
+                  <tr
+                    v-for="movement in paginatedMovements"
+                    :key="movement.id"
+                    class="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors"
                   >
-                    {{ getAmountText(movement) }}
-                  </td>
+                    <td class="px-6 py-5 text-[16px] text-slate-600">
+                      #{{ movement.id }}
+                    </td>
 
-                  <td class="px-6 py-5 text-[16px] font-semibold text-slate-950 text-right whitespace-nowrap">
-                    Bs. {{ formatMoney(movement.balance) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <td class="px-6 py-5 text-[16px] text-slate-600 whitespace-nowrap">
+                      {{ formatDate(movement.created_at) }}
+                    </td>
+
+                    <td class="px-6 py-5 text-[16px] text-slate-900">
+                      {{ movement.description }}
+                    </td>
+
+                    <td
+                      :class="[
+                        'px-6 py-5 text-[16px] font-medium text-right whitespace-nowrap',
+                        getAmountClass(movement)
+                      ]"
+                    >
+                      {{ getAmountText(movement) }}
+                    </td>
+
+                    <td class="px-6 py-5 text-[16px] font-semibold text-slate-950 text-right whitespace-nowrap">
+                      Bs. {{ formatMoney(movement.balance) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-gray-50">
+              <button 
+                @click="prevPage" 
+                :disabled="currentPage === 1"
+                class="px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 font-medium hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Anterior
+              </button>
+              
+              <span class="text-sm font-medium text-slate-600">
+                Página {{ currentPage }} de {{ totalPages }}
+              </span>
+              
+              <button 
+                @click="nextPage" 
+                :disabled="currentPage === totalPages"
+                class="px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 font-medium hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </section>
       </main>

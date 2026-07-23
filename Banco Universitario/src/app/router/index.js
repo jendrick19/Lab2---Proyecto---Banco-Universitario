@@ -48,4 +48,5 @@ const router = createRouter({
 // Guard global de autenticación (lógica en authGuard.js, función pura testeable).
 router.beforeEach((to) => authGuard(to, isAuthenticated())) 
 export default router
+
  
