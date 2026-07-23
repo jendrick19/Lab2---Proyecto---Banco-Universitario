@@ -113,8 +113,9 @@ const showNewPassword = ref(false)
 const isSaving = ref(false)
 const passwordError = ref('')
 const alertMessage = ref('')
+const showConfirmPasswordModal = ref(false)
 
-const handlePasswordChange = async () => {
+const handlePasswordChange = () => {
   passwordError.value = ''
 
   if (!currentPassword.value || !newPassword.value) {
@@ -132,6 +133,11 @@ const handlePasswordChange = async () => {
     return
   }
 
+  showConfirmPasswordModal.value = true
+}
+
+const executePasswordChange = async () => {
+  showConfirmPasswordModal.value = false
   isSaving.value = true
   try {
     await updatePassword({
@@ -441,6 +447,33 @@ const handlePasswordChange = async () => {
             class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
           >
             Sí, cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmación de Cambio de Contraseña -->
+    <div
+      v-if="showConfirmPasswordModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center"
+    >
+      <div class="bg-white rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4">
+        <h2 class="text-xl font-bold text-gray-800 mb-2">Confirmar Cambio</h2>
+        <p class="text-gray-600 mb-6">¿Estás seguro de que deseas actualizar tu contraseña?</p>
+
+        <div class="flex items-center justify-end gap-3">
+          <button
+            @click="showConfirmPasswordModal = false"
+            class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="executePasswordChange"
+            class="px-4 py-2 rounded-lg text-white font-medium hover:opacity-90 transition-all"
+            style="background-color: #085f63;"
+          >
+            Sí, cambiar
           </button>
         </div>
       </div>
